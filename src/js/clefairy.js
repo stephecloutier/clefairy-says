@@ -1,6 +1,6 @@
 /* clefairy-says
  *
- * /clefairy.js - Clefairy says main class
+ * src/js/clefairy.js - Clefairy says main class
  *
  * coded by Stéphanie Cloutier
  */
@@ -64,4 +64,11 @@ class Clefairy {
 
     }
 
+    // handleAction
+
+    // over
+
+    drawSpriteFromFrames({sx, sy, sw, sh, dx, dy, dw, dh}) {
+        this.context.drawImage(this.sprite, sx, sy, sw, sh, dx, dy, dw, dh);
+    }
 }
