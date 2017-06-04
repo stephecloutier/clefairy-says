@@ -27,12 +27,10 @@ class Clefairy {
     setup() {
         this.reset();
 
-        //document.addEventListener("keyup", this.handleAction.bind(this));
+        document.addEventListener("keyup", this.handleAction.bind(this));
+        this.canvas.addEventListener("click", this.handleAction.bind(this));
 
-        this.background.draw(this);
-        this.starting.draw(this);
-
-        //this.animate();
+        this.animate();
     }
 
     reset() {
@@ -50,26 +48,55 @@ class Clefairy {
         this.score = 0;
     }
 
-    /*
     animate() {
         this.animationRequestId = window.requestAnimationFrame(this.animate.bind(this));
 
         // check game state
+        /*
         if(this.started) {
             this.checkState();
         }
+        */
+
         // update elements (TODO)
         //if(this.started) {}
 
         // draw
         this.context.clearRect(0, 0, this.width, this.height);
         this.background.draw(this);
-        // TODO
+
+        if(this.started) {
+            // do something
+            if (this.ended) {
+                // draw gameover
+            }
+        } else {
+            this.starting.draw(this);
+        }
 
     }
-    */
 
-    // handleAction
+    handleAction(oEvent) {
+        let hasValidate = oEvent.type === "keyup" && (oEvent.keyCode === 32 || oEvent.keyCode === 13);
+
+        if(!hasValidate) {
+            return;
+        }
+        if(this.started) {
+            // do something
+        } else {
+            this.started = true;
+        }
+
+        /*
+        if(this.ended) {
+            if(hasValidate) {
+                this.reset();
+                this.animate();
+            }
+        }
+        */
+    }
 
     // over
 
