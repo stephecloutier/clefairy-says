@@ -5,7 +5,7 @@
  * coded by Stéphanie Cloutier
  */
 
-const SPRITESHEET_PATH = "resources/sprite_sheet.png";
+const SPRITESHEET_PATH = "resources/sprite_sheet2x.png";
 
 class Clefairy {
     constructor({canvas, context, width, height}) {
@@ -30,6 +30,7 @@ class Clefairy {
         //document.addEventListener("keyup", this.handleAction.bind(this));
 
         this.background.draw(this);
+        this.starting.draw(this);
 
         //this.animate();
     }
@@ -38,7 +39,7 @@ class Clefairy {
         let {width, height} = this;
 
         this.background = new CSBackground(width, height);
-        //this.starting = new CSStarting(width, height);
+        this.starting = new CSStarting(width, height);
         //this.arrows = new CSArrows(width, height);
         //this.ditto = new CSDitto(width, height);
         //this.gameOver = new CSGameOver(width, height);
