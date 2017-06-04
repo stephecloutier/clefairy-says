@@ -12,7 +12,7 @@ let oApp = {
     "height": null,
 };
 
-const setup = function90 {
+const setup = function() {
     oApp.canvas = document.querySelector("#game");
     if(!oApp.canvas.getContext) {
         console.error("Your browser doesn't support canvas, please update to play!");
