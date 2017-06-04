@@ -1,6 +1,6 @@
 /* clefairy-says
  *
- * /game.js - Canvas initialisation, game launcher
+ * src/js/game.js - Canvas initialisation, game launcher
  *
  * coded by Stéphanie Cloutier
  */
