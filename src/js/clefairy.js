@@ -7,6 +7,7 @@
 
 const SPRITESHEET_PATH = "resources/sprite_sheet2x.png";
 
+
 class Clefairy {
     constructor({canvas, context, width, height}) {
         // init canvas-related properties
@@ -22,6 +23,8 @@ class Clefairy {
             this.setup();
         });
         this.sprites.src = SPRITESHEET_PATH;
+
+        this.gameKeys = [32, 13, 38, 40, 37, 39, 65, 66];
     }
 
     setup() {
@@ -67,7 +70,7 @@ class Clefairy {
 
         if(this.started) {
             // do something
-            if (this.ended) {
+            if(this.ended) {
                 // draw gameover
             }
         } else {
@@ -77,15 +80,23 @@ class Clefairy {
     }
 
     handleAction(oEvent) {
-        let hasValidate = oEvent.type === "keyup" && (oEvent.keyCode === 32 || oEvent.keyCode === 13);
 
-        if(!hasValidate) {
+        // Check if key pressed is in they gameKeys array
+        const fValidateKey = function(iCurrentKeyCode) {
+            if(oEvent.keyCode === iCurrentKeyCode) return oEvent.keyCode;
+        }
+        if((oEvent.type == "keyup") && typeof this.gameKeys.find(fValidateKey) === "undefined") {
             return;
         }
+
+        // Check if game has started
         if(this.started) {
-            // do something
+            checkState();
         } else {
-            this.started = true;
+            if(oEvent.keyCode === 13 || oEvent.keyCode === 32) {
+                this.started = true;
+                this.launchGame();
+            }
         }
 
         /*
@@ -97,6 +108,37 @@ class Clefairy {
         }
         */
     }
+
+    launchGame() {
+        // Initialize movesArray;
+        // giveMoves();
+    }
+
+    checkState() {
+        // Check if its player's or IA's turn
+            // IA
+                // do something
+            // Player
+                //validateEntries();
+    }
+
+    giveMoves() {
+        // Launches IA's phase
+            // Display "Memorize !" on the board for 3 sec.
+
+            // Store in new array random arrows
+            // Move accordingly w/ music
+
+            // Display "Your turn !" on the board
+
+            // Incremente IA's turn count++
+    }
+
+    validateMoves() {
+
+    }
+
+
 
     // over
 
