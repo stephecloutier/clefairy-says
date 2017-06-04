@@ -18,37 +18,45 @@ class CSStarting {
              "dh": 60,
         };
         this.emote = {
-             "sx": 458,
-             "sy": 666,
-             "sw": 30,
-             "sh": 34,
-             "dx": (width - 30) / 2,
-             "dy": 186,
-             "dw": 30,
-             "dh": 34,
+            "steps": [
+                {
+                    "sx": 458,
+                    "sy": 666,
+                    "sw": 30,
+                    "sh": 34,
+                    "dx": (width - 30) / 2,
+                    "dy": 186,
+                    "dw": 30,
+                    "dh": 34,
+                },
+            ],
         };
-        this.clefairy = [
-            {
-                  "sx": 6,
-                  "sy": 0,
-                  "sw": 128,
-                  "sh": 124,
-                  "dx": (width - 116) / 2,
-                  "dy": 226,
-                  "dw": 128,
-                  "dh": 124,
-            },
-            {
-                "sx": 0,
-                "sy": 128,
-                "sw": 128,
-                "sh": 124,
-                "dx": (width - 128) / 2,
-                "dy": 226,
-                "dw": 128 ,
-                "dh": 124 ,
-            },
-        ];
+        this.clefairy = {
+            "steps": [
+                {
+                      "sx": 6,
+                      "sy": 0,
+                      "sw": 128,
+                      "sh": 124,
+                      "dx": (width - 116) / 2,
+                      "dy": 226,
+                      "dw": 128,
+                      "dh": 124,
+                },
+                {
+                    "sx": 0,
+                    "sy": 128,
+                    "sw": 128,
+                    "sh": 124,
+                    "dx": (width - 128) / 2,
+                    "dy": 226,
+                    "dw": 128 ,
+                    "dh": 124 ,
+                },
+            ],
+            "currentStep": 0,
+        };
+        this.clefairy.maxSteps = this.clefairy.steps.length,
         this.button = {
              "sx": 290,
              "sy": 540,
@@ -59,27 +67,30 @@ class CSStarting {
              "dw": 220,
              "dh": 92,
         };
+
+        this.time = {
+            "start": Date.now(),
+            "current": null,
+        };
+
     }
 
-     /*
-     this.frames.clefairy.animation = {
-         "max": this.frames.clefairy.length,
-         "current": 0,
-     }
-     */
-
-     //this.time
-
-     //this.frames.clefairy.state = {}
-
-
-
-    draw(game){
+    animate(game) {
+        // Drawing still frames
         game.drawSpriteFromFrames(this.title);
         game.drawSpriteFromFrames(this.emote);
-        //game.drawSpriteFromFrames(this.clefairy);
         game.drawSpriteFromFrames(this.button);
 
-    }
+        this.time.current = Date.now();
 
+        // Clefairy Animation
+        if(this.time.current - this.time.start > 300) {
+            this.clefairy.currentStep++;
+            if(this.clefairy.currentStep === this.clefairy.maxSteps) {
+                this.clefairy.currentStep = 0;
+            }
+            this.time.start = Date.now();
+        }
+        game.drawSpriteFromFrames(this.clefairy.steps[this.clefairy.currentStep]);
+    }
 }

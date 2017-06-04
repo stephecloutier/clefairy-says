@@ -71,7 +71,7 @@ class Clefairy {
                 // draw gameover
             }
         } else {
-            this.starting.draw(this);
+            this.starting.animate(this);
         }
 
     }
