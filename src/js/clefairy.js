@@ -14,7 +14,7 @@ class Clefairy {
         this.context = context;
         this.width = width;
         this.height = height;
-        this.animationRequestId = null; // what is this ?
+        this.animationRequestId = null;
 
         // load spritesheet
         this.sprites = new Image();
@@ -36,10 +36,10 @@ class Clefairy {
         let {width, height} = this;
 
         this.background = new CSBackground(width, height);
-        this.starting = new CSStarting(width, height);
-        this.arrows = new CSArrows(width, height);
-        this.ditto = new CSDitto(width, height);
-        this.gameOver = new CSGameOver(width, height);
+        //this.starting = new CSStarting(width, height);
+        //this.arrows = new CSArrows(width, height);
+        //this.ditto = new CSDitto(width, height);
+        //this.gameOver = new CSGameOver(width, height);
 
         // init game-related properties
         this.started = false;
