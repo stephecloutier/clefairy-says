@@ -47,6 +47,7 @@ class Clefairy {
         this.score = 0;
     }
 
+    /*
     animate() {
         this.animationRequestId = window.requestAnimationFrame(this.animate.bind(this));
 
@@ -63,6 +64,7 @@ class Clefairy {
         // TODO
 
     }
+    */
 
     // handleAction
 
