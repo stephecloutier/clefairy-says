@@ -88,8 +88,7 @@ class CSStarting {
                 this.emote.dy -= 4;
             }
         }
-            this.time.start = Date.now();
-        }
+        this.time.start = Date.now();
         game.drawSpriteFromFrames(this.clefairy.steps[this.clefairy.currentStep]);
         game.drawSpriteFromFrames(this.emote.step);
     }
