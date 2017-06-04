@@ -5,7 +5,7 @@
  * coded by Stéphanie Cloutier
  */
 
-const SPRITESHEET_PATH = "../resources/sprite_sheet.png";
+const SPRITESHEET_PATH = "resources/sprite_sheet.png";
 
 class Clefairy {
     constructor({canvas, context, width, height}) {
@@ -27,9 +27,11 @@ class Clefairy {
     setup() {
         this.reset();
 
-        document.addEventListener("keyup", this.handleAction.bind(this));
+        //document.addEventListener("keyup", this.handleAction.bind(this));
 
-        this.animate();
+        this.background.draw(this);
+
+        //this.animate();
     }
 
     reset() {
@@ -71,6 +73,6 @@ class Clefairy {
     // over
 
     drawSpriteFromFrames({sx, sy, sw, sh, dx, dy, dw, dh}) {
-        this.context.drawImage(this.sprite, sx, sy, sw, sh, dx, dy, dw, dh);
+        this.context.drawImage(this.sprites, sx, sy, sw, sh, dx, dy, dw, dh);
     }
 }
