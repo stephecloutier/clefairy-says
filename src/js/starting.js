@@ -18,18 +18,14 @@ class CSStarting {
              "dh": 60,
         };
         this.emote = {
-            "steps": [
-                {
-                    "sx": 458,
-                    "sy": 666,
-                    "sw": 30,
-                    "sh": 34,
-                    "dx": (width - 30) / 2,
-                    "dy": 186,
-                    "dw": 30,
-                    "dh": 34,
-                },
-            ],
+            "sx": 458,
+            "sy": 666,
+            "sw": 30,
+            "sh": 34,
+            "dx": (width - 30) / 2,
+            "dy": 186,
+            "dw": 30,
+            "dh": 34,
         };
         this.clefairy = {
             "steps": [
@@ -56,7 +52,7 @@ class CSStarting {
             ],
             "currentStep": 0,
         };
-        this.clefairy.maxSteps = this.clefairy.steps.length,
+
         this.button = {
              "sx": 290,
              "sy": 540,
@@ -78,19 +74,23 @@ class CSStarting {
     animate(game) {
         // Drawing still frames
         game.drawSpriteFromFrames(this.title);
-        game.drawSpriteFromFrames(this.emote);
         game.drawSpriteFromFrames(this.button);
 
         this.time.current = Date.now();
 
-        // Clefairy Animation
+        // Clefairy and emote animation
         if(this.time.current - this.time.start > 300) {
             this.clefairy.currentStep++;
-            if(this.clefairy.currentStep === this.clefairy.maxSteps) {
+            if(this.clefairy.currentStep === this.clefairy.steps.length) {
                 this.clefairy.currentStep = 0;
+                this.emote.dy += 4;
+            } else {
+                this.emote.dy -= 4;
             }
+        }
             this.time.start = Date.now();
         }
         game.drawSpriteFromFrames(this.clefairy.steps[this.clefairy.currentStep]);
+        game.drawSpriteFromFrames(this.emote.step);
     }
 }
