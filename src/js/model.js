@@ -60,6 +60,14 @@ class CSModel {
             },
         }
     }
+
+    draw(game) {
+        game.drawSpriteFromFrames(this.frames.normal);
+    }
+
+    animate(game) {
+        game.drawSpriteFromFrames(this.frames.up);
+    }
 }
 // Display phase
     // Display "Memorize !" on the board for 3 sec. (see boardmessages)

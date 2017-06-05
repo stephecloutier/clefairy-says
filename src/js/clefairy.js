@@ -45,8 +45,9 @@ class Clefairy {
 
         this.background = new CSBackground(width, height);
         this.starting = new CSStarting(width, height);
-        this.boardMessages = new CSBoardMessages(width, height);
-        //this.model = new CSModel(width, height);
+        //this.boardMessages = new CSBoardMessage(width, height);
+        this.memorizeMessage = new CSMemorizeMessage(width, height);
+        this.model = new CSModel(width, height);
         //this.arrows = new CSArrows(width, height);
         //this.ditto = new CSDitto(width, height);
         //this.gameOver = new CSGameOver(width, height);
@@ -61,29 +62,13 @@ class Clefairy {
     animate() {
         this.animationRequestId = window.requestAnimationFrame(this.animate.bind(this));
 
-        // check game state
         if(this.started) {
             this.checkState();
-        }
-
-        // update elements
-        if(this.started) {
-            //this.moves.update();
-            //this.ditto.update();
-        }
-
-        // draw
-        this.context.clearRect(0, 0, this.width, this.height);
-        this.background.draw(this);
-
-        if(this.started) {
-            //this.moves.draw();
-            //this.ditto.draw();
             if(this.ended) {
-                //this.gameOver.draw();
+                //this.endGame();
             }
         } else {
-            this.starting.animate(this);
+            this.startGame();
         }
     }
 
@@ -106,14 +91,22 @@ class Clefairy {
             }
         }
 
-        /*
         if(this.ended) {
             if(hasValidate) {
                 this.reset();
                 this.animate();
             }
         }
-        */
+    }
+
+    clearDrawing() {
+        this.context.clearRect(0, 0, this.width, this.height);
+        this.background.draw(this);
+    }
+
+    startGame() {
+        this.clearDrawing();
+        this.starting.animate(this);
     }
 
     launchGame() {
@@ -125,14 +118,12 @@ class Clefairy {
 
     checkState() {
         if(this.sState === 'ia') {
-            this.giveMove();
             console.log('Tour de l’ia');
+            this.giveMove();
+            this.processIaTurn();
+
+            // Pass the turn to the player
             this.sState = 'player';
-
-                    //console.log(this.boardMessages);
-                    //this.boardMessages.drawMemorize(this);
-
-            //this.boardMessages.drawMemorize(this);
         }
         if(this.sState === 'player') {
             this.validateMoves();
@@ -147,6 +138,18 @@ class Clefairy {
     validateMoves() {
         //console.log('Tour du joueur');
         //this.sState = 'ia';
+    }
+
+    processIaTurn() {
+        this.clearDrawing();
+        this.memorizeMessage.draw(this);
+        this.model.draw(this);
+        //this.model.animate(this);
+        window.setTimeout(() => this.clearDrawing(), 3000);
+        window.setTimeout(() => this.model.animate(this), 3000);
+        //if(this.time.current - this.time.start > 3000) {}
+
+        console.log('process ia turn');
     }
 
 
