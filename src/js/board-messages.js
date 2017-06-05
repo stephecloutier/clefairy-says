@@ -1,6 +1,6 @@
 /* clefairy-says
  *
- * src/js/board-messages.js - Display board messages according to phase
+ * src/js/board-messages.js - Board messages classes
  *
  * coded by Stéphanie Cloutier
  */
