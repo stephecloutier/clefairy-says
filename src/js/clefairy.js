@@ -65,7 +65,7 @@ class Clefairy {
         if(this.started) {
             this.checkState();
             if(this.ended) {
-                //this.endGame();
+                this.endGame();
             }
         } else {
             this.startGame();
@@ -107,6 +107,11 @@ class Clefairy {
     startGame() {
         this.clearDrawing();
         this.starting.animate(this);
+    }
+
+    endGame() {
+        //this.gameOver.draw(this);
+        console.log('Game over');
     }
 
     launchGame() {
