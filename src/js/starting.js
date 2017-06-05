@@ -17,16 +17,6 @@ class CSStarting {
              "dw": 146,
              "dh": 60,
         };
-        this.emote = {
-            "sx": 484,
-            "sy": 666,
-            "sw": 30,
-            "sh": 34,
-            "dx": (width - 30) / 2,
-            "dy": 186,
-            "dw": 30,
-            "dh": 34,
-        };
         this.clefairy = {
             "steps": [
                 {
@@ -83,13 +73,13 @@ class CSStarting {
             this.clefairy.currentStep++;
             if(this.clefairy.currentStep === this.clefairy.steps.length) {
                 this.clefairy.currentStep = 0;
-                this.emote.dy += 4;
+                game.modelEmotes.emotes.happy.dy -= 4;
             } else {
-                this.emote.dy -= 4;
+                game.modelEmotes.emotes.happy.dy += 4;
             }
             this.time.start = Date.now();
         }
         game.drawSpriteFromFrames(this.clefairy.steps[this.clefairy.currentStep]);
-        game.drawSpriteFromFrames(this.emote);
+        game.modelEmotes.draw(game, "happy");
     }
 }

@@ -47,9 +47,11 @@ class Clefairy {
         this.starting = new CSStarting(width, height);
         //this.boardMessages = new CSBoardMessage(width, height);
         this.memorizeMessage = new CSMemorizeMessage(width, height);
+        this.modelEmotes = new CSEmotes(width, height, 186);
         this.model = new CSModel(width, height);
         //this.arrows = new CSArrows(width, height);
         //this.ditto = new CSDitto(width, height);
+        //this.dittoEmotes = new CSEmotes(width, height, dy!)
         //this.gameOver = new CSGameOver(width, height);
 
         // init game-related properties
@@ -148,11 +150,10 @@ class Clefairy {
     processIaTurn() {
         this.clearDrawing();
         this.memorizeMessage.draw(this);
-        this.model.draw(this);
-        //this.model.animate(this);
+        this.model.draw(this); // version animée + emote ?
+        this.modelEmotes.draw(this, "careful");
         window.setTimeout(() => this.clearDrawing(), 3000);
         window.setTimeout(() => this.model.animate(this), 3000);
-        //if(this.time.current - this.time.start > 3000) {}
 
         console.log('process ia turn');
     }
