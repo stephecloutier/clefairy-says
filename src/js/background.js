@@ -8,7 +8,7 @@
 class CSBackground {
     constructor(width, height) {
         this.frame = {
-            "sx": 290,
+            "sx": 316,
             "sy": 0,
             "sw": 460,
             "sh": 540,

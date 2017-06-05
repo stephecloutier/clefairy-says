@@ -8,7 +8,7 @@
 class CSStarting {
     constructor(width, height) {
         this.title = {
-             "sx": 558,
+             "sx": 584,
              "sy": 632,
              "sw": 146,
              "sh": 60,
@@ -18,7 +18,7 @@ class CSStarting {
              "dh": 60,
         };
         this.emote = {
-            "sx": 458,
+            "sx": 484,
             "sy": 666,
             "sw": 30,
             "sh": 34,
@@ -30,31 +30,31 @@ class CSStarting {
         this.clefairy = {
             "steps": [
                 {
-                      "sx": 6,
-                      "sy": 0,
-                      "sw": 128,
-                      "sh": 124,
-                      "dx": (width - 116) / 2,
-                      "dy": 226,
-                      "dw": 128,
-                      "dh": 124,
+                    "sx": 0,
+                    "sy": 0,
+                    "sw": 142,
+                    "sh": 124,
+                    "dx": (width - 138) / 2,
+                    "dy": 226,
+                    "dw": 142,
+                    "dh": 124,
                 },
                 {
                     "sx": 0,
-                    "sy": 128,
-                    "sw": 128,
+                    "sy": 124,
+                    "sw": 142,
                     "sh": 124,
-                    "dx": (width - 128) / 2,
+                    "dx": (width - 138) / 2,
                     "dy": 226,
-                    "dw": 128 ,
-                    "dh": 124 ,
+                    "dw": 142,
+                    "dh": 124,
                 },
             ],
             "currentStep": 0,
         };
 
         this.button = {
-             "sx": 290,
+             "sx": 316,
              "sy": 540,
              "sw": 220,
              "sh": 92,
@@ -89,7 +89,6 @@ class CSStarting {
             }
             this.time.start = Date.now();
         }
-
         game.drawSpriteFromFrames(this.clefairy.steps[this.clefairy.currentStep]);
         game.drawSpriteFromFrames(this.emote);
     }
