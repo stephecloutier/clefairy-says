@@ -22,7 +22,7 @@ const setup = function() {
     oApp.width = oApp.canvas.width;
     oApp.height = oApp.canvas.height;
 
-    new Clefairy(oApp);
+    new ClefairySays(oApp);
 };
 
 setup();
