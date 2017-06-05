@@ -17,14 +17,18 @@ class Clefairy {
         this.height = height;
         this.animationRequestId = null;
 
+        // init variables
+        this.aGameKeys = [32, 13, 38, 40, 37, 39, 65, 66];
+        this.aPossibleMoves = [37, 38, 39, 40];
+        this.aMoves = [];
+        this.sState = '';
+
         // load spritesheet
         this.sprites = new Image();
         this.sprites.addEventListener("load", () => {
             this.setup();
         });
         this.sprites.src = SPRITESHEET_PATH;
-
-        this.gameKeys = [32, 13, 38, 40, 37, 39, 65, 66];
     }
 
     setup() {
@@ -41,6 +45,8 @@ class Clefairy {
 
         this.background = new CSBackground(width, height);
         this.starting = new CSStarting(width, height);
+        this.boardMessages = new CSBoardMessages(width, height);
+        //this.model = new CSModel(width, height);
         //this.arrows = new CSArrows(width, height);
         //this.ditto = new CSDitto(width, height);
         //this.gameOver = new CSGameOver(width, height);
@@ -49,43 +55,45 @@ class Clefairy {
         this.started = false;
         this.ended = false;
         this.score = 0;
+        this.aMoves = [];
     }
 
     animate() {
         this.animationRequestId = window.requestAnimationFrame(this.animate.bind(this));
 
         // check game state
-        /*
         if(this.started) {
             this.checkState();
         }
-        */
 
-        // update elements (TODO)
-        //if(this.started) {}
+        // update elements
+        if(this.started) {
+            //this.moves.update();
+            //this.ditto.update();
+        }
 
         // draw
         this.context.clearRect(0, 0, this.width, this.height);
         this.background.draw(this);
 
         if(this.started) {
-            // do something
+            //this.moves.draw();
+            //this.ditto.draw();
             if(this.ended) {
-                // draw gameover
+                //this.gameOver.draw();
             }
         } else {
             this.starting.animate(this);
         }
-
     }
 
     handleAction(oEvent) {
 
-        // Check if key pressed is in they gameKeys array
+        // Check if key pressed is in they aGameKeys array
         const fValidateKey = function(iCurrentKeyCode) {
-            if(oEvent.keyCode === iCurrentKeyCode) return oEvent.keyCode;
+            if(oEvent.keyCode === iCurrentKeyCode) return true;
         }
-        if((oEvent.type == "keyup") && typeof this.gameKeys.find(fValidateKey) === "undefined") {
+        if(oEvent.type == "keyup" && !this.aGameKeys.find(fValidateKey)) {
             return;
         }
 
@@ -93,8 +101,7 @@ class Clefairy {
         if(this.started) {
             checkState();
         } else {
-            if(oEvent.keyCode === 13 || oEvent.keyCode === 32) {
-                this.started = true;
+            if(oEvent.keyCode === 13 || oEvent.keyCode === 32 || oEvent.type === "click") {
                 this.launchGame();
             }
         }
@@ -110,32 +117,36 @@ class Clefairy {
     }
 
     launchGame() {
-        // Initialize movesArray;
-        // giveMoves();
+        this.started = true;
+        this.aMoves = [];
+        this.sState = 'ia';
+        this.checkState();
     }
 
     checkState() {
-        // Check if its player's or IA's turn
-            // IA
-                // do something
-            // Player
-                //validateEntries();
+        if(this.sState === 'ia') {
+            this.giveMove();
+            console.log('Tour de l’ia');
+            this.sState = 'player';
+
+                    //console.log(this.boardMessages);
+                    //this.boardMessages.drawMemorize(this);
+
+            //this.boardMessages.drawMemorize(this);
+        }
+        if(this.sState === 'player') {
+            this.validateMoves();
+        }
     }
 
-    giveMoves() {
-        // Launches IA's phase
-            // Display "Memorize !" on the board for 3 sec.
-
-            // Store in new array random arrows
-            // Move accordingly w/ music
-
-            // Display "Your turn !" on the board
-
-            // Incremente IA's turn count++
+    giveMove() {
+        // Push random move with its corresponding index in aPossibleMoves to aMoves
+        this.aMoves.push(this.aPossibleMoves[Math.floor(Math.random() * 4)]);
     }
 
     validateMoves() {
-
+        //console.log('Tour du joueur');
+        //this.sState = 'ia';
     }
 
 
