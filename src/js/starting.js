@@ -17,31 +17,6 @@ class CSStarting {
              "dw": 146,
              "dh": 60,
         };
-        this.clefairy = {
-            "steps": [
-                {
-                    "sx": 0,
-                    "sy": 0,
-                    "sw": 142,
-                    "sh": 124,
-                    "dx": (width - 138) / 2,
-                    "dy": 226,
-                    "dw": 142,
-                    "dh": 124,
-                },
-                {
-                    "sx": 0,
-                    "sy": 124,
-                    "sw": 142,
-                    "sh": 124,
-                    "dx": (width - 138) / 2,
-                    "dy": 226,
-                    "dw": 142,
-                    "dh": 124,
-                },
-            ],
-            "currentStep": 0,
-        };
 
         this.button = {
              "sx": 316,
@@ -59,9 +34,13 @@ class CSStarting {
             "current": null,
         };
 
+        // init clefairy position and step variable
+        this.position = "normal";
+        this.currentStep = 0;
+
     }
 
-    animate(game) {
+    draw(game) {
         // Drawing still frames
         game.drawSpriteFromFrames(this.title);
         game.drawSpriteFromFrames(this.button);
@@ -70,16 +49,20 @@ class CSStarting {
 
         // Clefairy and emote animation
         if(this.time.current - this.time.start > 300) {
-            this.clefairy.currentStep++;
-            if(this.clefairy.currentStep === this.clefairy.steps.length) {
-                this.clefairy.currentStep = 0;
+            if(this.currentStep) {
+                this.position = "down";
                 game.modelEmotes.emotes.happy.dy -= 4;
+                this.currentStep = 0;
             } else {
+                this.position = "normal";
                 game.modelEmotes.emotes.happy.dy += 4;
+                this.currentStep++;
             }
             this.time.start = Date.now();
         }
-        game.drawSpriteFromFrames(this.clefairy.steps[this.clefairy.currentStep]);
+
+        // Clefairy + emote draw
+        game.clefairy.draw(game, "model", this.position);
         game.modelEmotes.draw(game, "happy");
     }
 }

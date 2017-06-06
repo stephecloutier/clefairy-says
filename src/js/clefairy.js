@@ -115,19 +115,11 @@ class CSClefairy {
         };
     }
 
-    draw(game, sprite) {
-        game.drawSpriteFromFrames(this.sprites[sprite].normal);
+    draw(game, version, position) {
+        game.drawSpriteFromFrames(this.sprites[version][position]);
     }
 
-    animate(game, sprite) {
-        game.drawSpriteFromFrames(this.sprites[sprite].up);
+    animate(game, version) {
+        game.drawSpriteFromFrames(this.sprites[version].up);
     }
 }
-// Display phase
-    // Display "Memorize !" on the board for 3 sec. (see boardmessages)
-
-    // Move accordingly to aMoves + show arrows on board (w/ music)
-
-    // Display "Your turn !" on the board
-
-    // Incremente IA's turn count++

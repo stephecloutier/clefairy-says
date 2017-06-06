@@ -108,7 +108,7 @@ class ClefairySays {
 
     startGame() {
         this.clearDrawing();
-        this.starting.animate(this);
+        this.starting.draw(this);
     }
 
     endGame() {
