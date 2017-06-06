@@ -170,7 +170,7 @@ class ClefairySays {
 
     iaIntroPhase() {
         this.boardMessages.draw(this, "memorize");
-        this.clefairy.draw(this, "model", "up"); // version animée + emote ?
+        this.clefairy.draw(this, "model", "normal"); // version animée + emote ?
         this.modelEmotes.draw(this, "careful");
         this.time.actionStart = Date.now();
     }
