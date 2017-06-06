@@ -23,7 +23,7 @@ class ClefairySays {
             {"key": 37, "position": "left"},
             {"key": 38, "position": "up"},
             {"key": 39, "position": "right"},
-            {"key": 40, "position": "left"},
+            {"key": 40, "position": "down"},
         ];
         this.aMoves = [];
         this.sState = '';
