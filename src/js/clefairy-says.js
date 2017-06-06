@@ -160,28 +160,34 @@ class ClefairySays {
     processIaTurn() {
         this.time.current = Date.now();
 
-        // Message on board phase
         if(this.time.current - this.time.turnStart < 2000) {
-            this.boardMessages.draw(this, "memorize");
-            this.clefairy.draw(this, "model", "up"); // version animée + emote ?
-            this.modelEmotes.draw(this, "careful");
-            this.time.actionStart = Date.now();
+            this.iaIntroPhase();
         }
-
-        // Dancing + arrows phase
         if(this.time.current - this.time.turnStart >= 2000) {
-            this.time.current = Date.now();
-            this.clefairy.draw(this, "model", this.aMoves[this.currentStep]);
-            if((this.time.current - this.time.actionStart > 1000) && this.currentStep < this.aMoves.length) {
-                this.currentStep++;
-                this.time.actionStart = Date.now();
-            }
-            if(this.currentStep >= this.aMoves.length) {
-                this.iaTurn = false;
-                this.playerTurn = true;
-            }
+            this.iaDancingPhase();
         }
     }
+
+    iaIntroPhase() {
+        this.boardMessages.draw(this, "memorize");
+        this.clefairy.draw(this, "model", "up"); // version animée + emote ?
+        this.modelEmotes.draw(this, "careful");
+        this.time.actionStart = Date.now();
+    }
+
+    iaDancingPhase() {
+        this.time.current = Date.now();
+        this.clefairy.draw(this, "model", this.aMoves[this.currentStep]);
+        if((this.time.current - this.time.actionStart > 1000) && this.currentStep < this.aMoves.length) {
+            this.currentStep++;
+            this.time.actionStart = Date.now();
+        }
+        if(this.currentStep >= this.aMoves.length) {
+            this.iaTurn = false;
+            this.playerTurn = true;
+        }
+    }
+
 
     // processPlayerTurn(){}
 
