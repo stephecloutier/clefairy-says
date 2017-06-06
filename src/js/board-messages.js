@@ -5,21 +5,23 @@
  * coded by Stéphanie Cloutier
  */
 
- class CSMemorizeMessage {
+ class CSBoardMessages {
      constructor(width, height) {
-         this.memorize = {
-             "sx": 316,
-             "sy": 734,
-             "sw": 146,
-             "sh": 26,
-             "dx": (width - 146) / 2,
-             "dy": 60,
-             "dw": 146,
-             "dh": 26,
+         this.messages = {
+             "memorize": {
+                 "sx": 316,
+                 "sy": 734,
+                 "sw": 146,
+                 "sh": 26,
+                 "dx": (width - 146) / 2,
+                 "dy": 60,
+                 "dw": 146,
+                 "dh": 26,
+             },
          };
      }
 
-     draw(game) {
-         game.drawSpriteFromFrames(this.memorize);
+     draw(game, name) {
+         game.drawSpriteFromFrames(this.messages[name]);
      }
  }

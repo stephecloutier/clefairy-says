@@ -50,8 +50,7 @@ class ClefairySays {
 
         this.background = new CSBackground(width, height);
         this.starting = new CSStarting(width, height);
-        //this.boardMessages = new CSBoardMessage(width, height);
-        this.memorizeMessage = new CSMemorizeMessage(width, height);
+        this.boardMessages = new CSBoardMessages(width, height);
         this.modelEmotes = new CSEmotes(width, height, 186);
         this.clefairy = new CSClefairy(width, height);
         //this.arrows = new CSArrows(width, height);
@@ -154,7 +153,7 @@ class ClefairySays {
 
     processIaTurn() {
         this.clearDrawing();
-        this.memorizeMessage.draw(this);
+        this.boardMessages.draw(this, "memorize");
         this.clefairy.draw(this, "model", "up"); // version animée + emote ?
         this.modelEmotes.draw(this, "careful");
         window.setTimeout(() => this.clearDrawing(), 3000);
