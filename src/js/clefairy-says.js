@@ -19,7 +19,12 @@ class ClefairySays {
 
         // init variables
         this.aGameKeys = [32, 13, 38, 40, 37, 39, 65, 66];
-        this.aPossibleMoves = [37, 38, 39, 40];
+        this.aPossibleMoves = [
+            {"key": 37, "position": "left"},
+            {"key": 38, "position": "up"},
+            {"key": 39, "position": "right"},
+            {"key": 40, "position": "left"},
+        ];
         this.aMoves = [];
         this.sState = '';
 
@@ -139,7 +144,7 @@ class ClefairySays {
 
     giveMove() {
         // Push random move with its corresponding index in aPossibleMoves to aMoves
-        this.aMoves.push(this.aPossibleMoves[Math.floor(Math.random() * 4)]);
+        this.aMoves.push(this.aPossibleMoves[Math.floor(Math.random() * 4)].position);
     }
 
     validateMoves() {
@@ -150,11 +155,12 @@ class ClefairySays {
     processIaTurn() {
         this.clearDrawing();
         this.memorizeMessage.draw(this);
-        this.clefairy.draw(this, "model"); // version animée + emote ?
+        this.clefairy.draw(this, "model", "up"); // version animée + emote ?
         this.modelEmotes.draw(this, "careful");
         window.setTimeout(() => this.clearDrawing(), 3000);
         window.setTimeout(() => this.clefairy.animate(this, "model"), 3000);
 
+        console.log(this.aMoves);
         console.log('process ia turn');
     }
 
