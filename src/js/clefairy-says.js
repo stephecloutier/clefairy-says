@@ -25,8 +25,6 @@ class ClefairySays {
             {"key": 39, "position": "right"},
             {"key": 40, "position": "down"},
         ];
-        this.aMoves = [];
-        this.sState = '';
 
         // load spritesheet
         this.sprites = new Image();
@@ -34,6 +32,14 @@ class ClefairySays {
             this.setup();
         });
         this.sprites.src = SPRITESHEET_PATH;
+
+        this.time = {
+            "start": Date.now(),
+            "current": null,
+            "turnStart": null,
+            "actionStart": null,
+        }
+        this.currentStep = undefined;
     }
 
     setup() {
@@ -61,20 +67,49 @@ class ClefairySays {
         // init game-related properties
         this.started = false;
         this.ended = false;
+        this.iaTurn = false;
+        this.playerTurn = false;
         this.score = 0;
         this.aMoves = [];
+
     }
 
     animate() {
         this.animationRequestId = window.requestAnimationFrame(this.animate.bind(this));
 
+
         if(this.started) {
             this.checkState();
+        }
+        // update elements
+        /*
+        if(this.started) {
+            if(this.iaTurn) {
+                this.clefairy.update(this, "model");
+                console.log('je mupdate');
+            }
+            if(this.playerTurn) {
+                console.log('Player’s turn');
+            }
+        }
+        */
+
+        // draw
+        this.context.clearRect(0, 0, this.width, this.height);
+        this.background.draw(this);
+
+        if(this.started) {
+            if(this.iaTurn) {
+                this.processIaTurn();
+            }
+            if(this.playerTurn) {
+                console.log('Draw player turn');
+            }
             if(this.ended) {
                 this.endGame();
             }
         } else {
-            this.startGame();
+            this.starting.draw(this);
         }
     }
 
@@ -90,7 +125,7 @@ class ClefairySays {
 
         // Check if game has started
         if(this.started) {
-            checkState();
+            this.checkState();
         } else {
             if(oEvent.keyCode === 13 || oEvent.keyCode === 32 || oEvent.type === "click") {
                 this.launchGame();
@@ -105,16 +140,6 @@ class ClefairySays {
         }
     }
 
-    clearDrawing() {
-        this.context.clearRect(0, 0, this.width, this.height);
-        this.background.draw(this);
-    }
-
-    startGame() {
-        this.clearDrawing();
-        this.starting.draw(this);
-    }
-
     endGame() {
         //this.gameOver.draw(this);
         console.log('Game over');
@@ -122,21 +147,15 @@ class ClefairySays {
 
     launchGame() {
         this.started = true;
-        this.aMoves = [];
-        this.sState = 'ia';
+        this.initIaTurn();
         this.checkState();
     }
 
     checkState() {
-        if(this.sState === 'ia') {
-            console.log('Tour de l’ia');
-            this.giveMove();
+        if(this.iaTurn) {
             this.processIaTurn();
-
-            // Pass the turn to the player
-            this.sState = 'player';
         }
-        if(this.sState === 'player') {
+        if(this.playerTurn) {
             this.validateMoves();
         }
     }
@@ -144,23 +163,49 @@ class ClefairySays {
     giveMove() {
         // Push random move with its corresponding index in aPossibleMoves to aMoves
         this.aMoves.push(this.aPossibleMoves[Math.floor(Math.random() * 4)].position);
+        this.aMoves.push(this.aPossibleMoves[Math.floor(Math.random() * 4)].position);
+        this.aMoves.push(this.aPossibleMoves[Math.floor(Math.random() * 4)].position);
+        this.aMoves.push(this.aPossibleMoves[Math.floor(Math.random() * 4)].position);
     }
 
     validateMoves() {
         //console.log('Tour du joueur');
-        //this.sState = 'ia';
+        //this.playerTurn = false;
+        //this.iaTurn = true;
+    }
+
+    initIaTurn() {
+        this.iaTurn = true;
+        this.time.turnStart = Date.now();
+        this.aMoves = [];
+        this.currentStep = 0;
+        this.giveMove();
     }
 
     processIaTurn() {
-        this.clearDrawing();
-        this.boardMessages.draw(this, "memorize");
-        this.clefairy.draw(this, "model", "up"); // version animée + emote ?
-        this.modelEmotes.draw(this, "careful");
-        window.setTimeout(() => this.clearDrawing(), 3000);
-        window.setTimeout(() => this.clefairy.animate(this, "model"), 3000);
+        this.time.current = Date.now();
 
-        console.log(this.aMoves);
-        console.log('process ia turn');
+        // Message on board phase
+        if(this.time.current - this.time.turnStart < 2000) {
+            this.boardMessages.draw(this, "memorize");
+            this.clefairy.draw(this, "model", "up"); // version animée + emote ?
+            this.modelEmotes.draw(this, "careful");
+            this.time.actionStart = Date.now();
+        }
+
+        // Dancing + arrows phase
+        if(this.time.current - this.time.turnStart >= 2000) {
+            this.time.current = Date.now();
+            this.clefairy.draw(this, "model", this.aMoves[this.currentStep]);
+            if((this.time.current - this.time.actionStart > 1000) && this.currentStep < this.aMoves.length) {
+                this.currentStep++;
+                this.time.actionStart = Date.now();
+            }
+            if(this.currentStep >= this.aMoves.length) {
+                this.iaTurn = false;
+                this.playerTurn = true;
+            }
+        }
     }
 
     // processPlayerTurn(){}

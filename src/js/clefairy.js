@@ -113,13 +113,19 @@ class CSClefairy {
                 },
             },
         };
+
+        this.time = {
+            "start": Date.now(),
+            "current": null,
+        };
+
     }
 
-    draw(game, version, position) {
-        game.drawSpriteFromFrames(this.sprites[version][position]);
+    draw(game, version, move) {
+        game.drawSpriteFromFrames(this.sprites[version][move]);
     }
 
-    animate(game, version) {
-        game.drawSpriteFromFrames(this.sprites[version].up);
+    update(game, version) {
+        console.log('les commandes ont changées dendroit');
     }
 }

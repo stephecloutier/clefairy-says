@@ -1,6 +1,6 @@
 /* clefairy-says
  *
- * src/js/board-messages.js - Board messages classes
+ * src/js/board-messages.js - Board messages class
  *
  * coded by Stéphanie Cloutier
  */
