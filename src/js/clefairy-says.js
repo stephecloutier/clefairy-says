@@ -77,40 +77,17 @@ class ClefairySays {
     animate() {
         this.animationRequestId = window.requestAnimationFrame(this.animate.bind(this));
 
-
-        if(this.started) {
-            this.checkState();
-        }
-        // update elements
-        /*
-        if(this.started) {
-            if(this.iaTurn) {
-                this.clefairy.update(this, "model");
-                console.log('je mupdate');
-            }
-            if(this.playerTurn) {
-                console.log('Player’s turn');
-            }
-        }
-        */
-
         // draw
         this.context.clearRect(0, 0, this.width, this.height);
         this.background.draw(this);
 
+        // check state of the game
         if(this.started) {
-            if(this.iaTurn) {
-                this.processIaTurn();
-            }
-            if(this.playerTurn) {
-                console.log('Draw player turn');
-            }
-            if(this.ended) {
-                this.endGame();
-            }
+            this.checkState();
         } else {
             this.starting.draw(this);
         }
+
     }
 
     handleAction(oEvent) {
@@ -132,23 +109,14 @@ class ClefairySays {
             }
         }
 
+        /*
         if(this.ended) {
             if(hasValidate) {
                 this.reset();
                 this.animate();
             }
         }
-    }
-
-    endGame() {
-        //this.gameOver.draw(this);
-        console.log('Game over');
-    }
-
-    launchGame() {
-        this.started = true;
-        this.initIaTurn();
-        this.checkState();
+        */
     }
 
     checkState() {
@@ -158,6 +126,12 @@ class ClefairySays {
         if(this.playerTurn) {
             this.validateMoves();
         }
+    }
+
+    launchGame() {
+        this.started = true;
+        this.initIaTurn();
+        this.checkState();
     }
 
     giveMove() {
@@ -180,6 +154,7 @@ class ClefairySays {
         this.aMoves = [];
         this.currentStep = 0;
         this.giveMove();
+        console.log(this.aMoves);
     }
 
     processIaTurn() {
