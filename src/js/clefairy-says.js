@@ -124,7 +124,7 @@ class ClefairySays {
             this.processIaTurn();
         }
         if(this.playerTurn) {
-            //this.processPlayerTurn();
+            this.processPlayerTurn();
         }
     }
 
@@ -201,15 +201,6 @@ class ClefairySays {
         for(let i = 0; i <= this.currentStep; i++) {
             this.aMoves[i].draw(this);
         }
-
-
-        //this.arrows.sprites[this.aMoves[this.currentStep]].dx += 37;
-        /*
-        if(this.aMoves.length % 10) {
-            this.arrows.sprites[this.aMoves[this.currentStep]].dx = 57;
-            this.arrows.sprites[this.aMoves[this.currentStep]].dy += 28;
-        }
-        */
     }
 
     initPlayerTurn() {
@@ -220,7 +211,10 @@ class ClefairySays {
     }
 
 
-    // processPlayerTurn(){}
+    processPlayerTurn(){
+        this.clefairy.draw(this, "model", "normal");
+        this.boardMessages.draw(this, "playerTurn");
+    }
 
     // over
 
