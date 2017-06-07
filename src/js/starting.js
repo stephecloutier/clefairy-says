@@ -35,7 +35,7 @@ class CSStarting {
         };
 
         // init clefairy position and step variable
-        this.position = "normal";
+        this.direction = "normal";
         this.currentStep = 0;
 
     }
@@ -50,11 +50,11 @@ class CSStarting {
         // Clefairy and emote animation
         if(this.time.current - this.time.start > 300) {
             if(this.currentStep) {
-                this.position = "down";
+                this.direction = "down";
                 game.modelEmotes.emotes.happy.dy -= 4;
                 this.currentStep = 0;
             } else {
-                this.position = "normal";
+                this.direction = "normal";
                 game.modelEmotes.emotes.happy.dy += 4;
                 this.currentStep++;
             }
@@ -62,7 +62,7 @@ class CSStarting {
         }
 
         // Clefairy + emote draw
-        game.clefairy.draw(game, "model", this.position);
+        game.clefairy.direction = this.direction;
         game.modelEmotes.draw(game, "happy");
     }
 }
