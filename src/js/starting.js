@@ -7,17 +7,6 @@
 
 class CSStarting {
     constructor(width, height) {
-        this.title = {
-             "sx": 584,
-             "sy": 632,
-             "sw": 146,
-             "sh": 60,
-             "dx": (width - 146) / 2,
-             "dy": 84,
-             "dw": 146,
-             "dh": 60,
-        };
-
         this.button = {
              "sx": 316,
              "sy": 540,
@@ -42,7 +31,7 @@ class CSStarting {
 
     draw(game) {
         // Drawing still frames
-        game.drawSpriteFromFrames(this.title);
+        game.boardMessages.message = "gameTitle";
         game.drawSpriteFromFrames(this.button);
 
         this.time.current = Date.now();
