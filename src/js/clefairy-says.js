@@ -70,6 +70,7 @@ class ClefairySays {
         this.iaTurn = false;
         this.playerTurn = false;
         this.playerActionStart = false;
+        this.playerMovesValidation = false;
         this.score = 0;
         this.aMoves = [];
         this.aPlayerMoves = [];
@@ -162,10 +163,6 @@ class ClefairySays {
         }
     }
 
-    validateMoves() {
-
-    }
-
     initIaTurn() {
         this.iaTurn = true;
         this.time.turnStart = Date.now();
@@ -233,21 +230,34 @@ class ClefairySays {
                 this.playerActionStart = true;
                 this.playerArrowsPhase();
             } else {
-                this.playerActionStart = false;
                 this.playerArrowsPhase();
+                this.playerActionStart = false;
+                if(this.time.current - this.time.playerAction > 1000) {
+                    this.validateMoves();
+                }
             }
         }
-
         if(this.time.current - this.time.playerAction > 500) {
             this.ditto.direction = "normal";
         }
     }
 
     playerArrowsPhase() {
-        for(let i = 0; i < this.aPlayerMoves.length; i++) {
-            this.aPlayerMoves[i].draw(this);
+        if(!this.playerMovesValidation) {
+            for(let i = 0; i < this.aPlayerMoves.length; i++) {
+                this.aPlayerMoves[i].draw(this);
+            }
         }
     }
+
+    validateMoves() {
+        this.playerMovesValidation = true;
+        for(let i = 0; i <= this.aPlayerMoves.length; i++) {
+            this.ditto.direction = this.aPlayerMoves[i].direction;
+        }
+    }
+
+
 
     // over
 
