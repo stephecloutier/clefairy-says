@@ -56,7 +56,7 @@ class ClefairySays {
 
         this.background = new CSBackground(width, height);
         this.starting = new CSStarting(width, height);
-        this.boardMessages = new CSBoardMessages(width, height);
+        this.boardMessages = new CSBoardMessages(width, "gameTitle", true);
         this.modelEmotes = new CSEmotes(width, height, 186);
         //this.dittoEmotes = new CSEmotes(width, height, dy!)
         this.clefairy = new CSClefairy(width, "clefairy", "normal");
@@ -69,6 +69,7 @@ class ClefairySays {
         this.ended = false;
         this.iaTurn = false;
         this.playerTurn = false;
+        this.playerActionStart = false;
         this.score = 0;
         this.aMoves = [];
         this.aPlayerMoves = [];
@@ -81,7 +82,9 @@ class ClefairySays {
         this.context.clearRect(0, 0, this.width, this.height);
         this.background.draw(this);
         this.clefairy.draw(this);
-
+        if(this.boardMessages.display) {
+            this.boardMessages.draw(this);
+        }
         // check state of the game
         if(this.started) {
             this.ditto.draw(this);
@@ -104,8 +107,10 @@ class ClefairySays {
         // Check if game has started
         if(this.started) {
             if(this.playerTurn) {
-                if(oEvent.keyCode === 37 || oEvent.keyCode === 38 || oEvent.keyCode === 39 || oEvent.keyCode === 40 ) {
-                    this.addPlayerMove(oEvent.keyCode);
+                if(this.playerActionStart) {
+                    if(oEvent.keyCode === 37 || oEvent.keyCode === 38 || oEvent.keyCode === 39 || oEvent.keyCode === 40 ) {
+                        this.addPlayerMove(oEvent.keyCode);
+                    }
                 }
             }
         } else {
@@ -180,7 +185,7 @@ class ClefairySays {
     }
 
     iaIntroPhase() {
-        this.boardMessages.draw(this, "memorize");
+        this.boardMessages.message = "memorize";
         this.modelEmotes.draw(this, "careful");
         this.time.actionStart = Date.now();
     }
@@ -204,6 +209,7 @@ class ClefairySays {
     }
 
     iaArrowsPhase() {
+        this.boardMessages.display = false;
         for(let i = 0; i <= this.currentStep; i++) {
             this.aMoves[i].draw(this);
         }
@@ -211,13 +217,20 @@ class ClefairySays {
 
     initPlayerTurn() {
         this.playerTurn = true;
+        this.boardMessages.display = true;
         this.aPlayerMoves = [];
         this.time.turnStart = Date.now();
     }
 
 
     processPlayerTurn(){
-        this.boardMessages.draw(this, "playerTurn");
+        this.time.current = Date.now();
+        this.boardMessages.message = "playerTurn";
+        if(this.time.current - this.time.turnStart > 1500) {
+            this.boardMessages.display = false;
+            this.playerActionStart = true;
+        }
+
     }
 
     // over
