@@ -59,8 +59,8 @@ class ClefairySays {
         this.boardMessages = new CSBoardMessages(width, height);
         this.modelEmotes = new CSEmotes(width, height, 186);
         //this.dittoEmotes = new CSEmotes(width, height, dy!)
-        this.clefairy = new CSClefairy(width, height);
-        //this.ditto = new CSDitto(width, height);
+        this.clefairy = new CSClefairy(width, "clefairy", "normal");
+        this.ditto = new CSClefairy(width, "ditto", "normal");
 
         //this.gameOver = new CSGameOver(width, height);
 
@@ -80,14 +80,15 @@ class ClefairySays {
         // draw
         this.context.clearRect(0, 0, this.width, this.height);
         this.background.draw(this);
+        this.clefairy.draw(this);
 
         // check state of the game
         if(this.started) {
+            this.ditto.draw(this);
             this.checkState();
         } else {
             this.starting.draw(this);
         }
-
     }
 
     handleAction(oEvent) {
@@ -103,7 +104,9 @@ class ClefairySays {
         // Check if game has started
         if(this.started) {
             if(this.playerTurn) {
-                this.clefairy.handleAction(oEvent, this);
+                if(oEvent.keyCode === 37 || oEvent.keyCode === 38 || oEvent.keyCode === 39 || oEvent.keyCode === 40 ) {
+                    this.addPlayerMove(oEvent.keyCode);
+                }
             }
         } else {
             if(oEvent.keyCode === 13 || oEvent.keyCode === 32 || oEvent.type === "click") {
@@ -142,13 +145,19 @@ class ClefairySays {
         this.aMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].position, this.aMoves.length));
 
         console.log(this.aMoves);
+    }
 
+    addPlayerMove(keyCode) {
+        for(let i = 0; i < this.aPossibleMoves.length; i++) {
+            if(this.aPossibleMoves[i].key === keyCode) {
+                this.aPlayerMoves.push(this.aPossibleMoves[i].position);
+                this.ditto.direction = this.aPlayerMoves[this.aPlayerMoves.length - 1];
+            }
+        }
     }
 
     validateMoves() {
-        //console.log('Tour du joueur');
-        //this.playerTurn = false;
-        //this.iaTurn = true;
+
     }
 
     initIaTurn() {
@@ -157,7 +166,6 @@ class ClefairySays {
         this.aMoves = [];
         this.currentStep = 0;
         this.giveMove();
-        console.log(this.aMoves);
     }
 
     processIaTurn() {
@@ -169,12 +177,10 @@ class ClefairySays {
         if(this.time.current - this.time.turnStart >= 2000) {
             this.iaDancingPhase();
         }
-        this.clefairy.draw(this, "ditto", "normal");
     }
 
     iaIntroPhase() {
         this.boardMessages.draw(this, "memorize");
-        this.clefairy.draw(this, "model", "normal"); // version animée + emote ?
         this.modelEmotes.draw(this, "careful");
         this.time.actionStart = Date.now();
     }
@@ -182,9 +188,9 @@ class ClefairySays {
     iaDancingPhase() {
         this.time.current = Date.now();
         if(this.time.current - this.time.actionStart > 1000) {
-            this.clefairy.draw(this, "model", "normal");
+            this.clefairy.direction = "normal";
         } else {
-            this.clefairy.draw(this, "model", this.aMoves[this.currentStep].direction);
+            this.clefairy.direction = this.aMoves[this.currentStep].direction;
         }
         this.iaArrowsPhase();
         if((this.time.current - this.time.actionStart > 1400) && this.currentStep < this.aMoves.length) {
@@ -195,7 +201,6 @@ class ClefairySays {
             this.iaTurn = false;
             this.initPlayerTurn();
         }
-
     }
 
     iaArrowsPhase() {
@@ -212,9 +217,7 @@ class ClefairySays {
 
 
     processPlayerTurn(){
-        this.clefairy.draw(this, "model", "normal");
         this.boardMessages.draw(this, "playerTurn");
-        this.clefairy.draw(this, "ditto", "normal");
     }
 
     // over
