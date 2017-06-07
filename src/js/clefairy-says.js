@@ -20,10 +20,10 @@ class ClefairySays {
         // init variables
         this.aGameKeys = [32, 13, 38, 40, 37, 39, 65, 66];
         this.aPossibleMoves = [
-            {"key": 37, "position": "left"},
-            {"key": 38, "position": "up"},
-            {"key": 39, "position": "right"},
-            {"key": 40, "position": "down"},
+            {"key": 37, "direction": "left"},
+            {"key": 38, "direction": "up"},
+            {"key": 39, "direction": "right"},
+            {"key": 40, "direction": "down"},
         ];
 
         // load spritesheet
@@ -110,6 +110,7 @@ class ClefairySays {
                 if(this.playerActionStart) {
                     if(oEvent.keyCode === 37 || oEvent.keyCode === 38 || oEvent.keyCode === 39 || oEvent.keyCode === 40 ) {
                         this.addPlayerMove(oEvent.keyCode);
+                        this.time.playerAction = Date.now();
                     }
                 }
             }
@@ -146,17 +147,17 @@ class ClefairySays {
 
     giveMove() {
         // Create arrow with random index in aPossibleMoves and push it to aMoves
-        this.aMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].position, this.aMoves.length));
-        this.aMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].position, this.aMoves.length));
-
+        this.aMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aMoves.length));
+        this.aMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aMoves.length));
         console.log(this.aMoves);
     }
 
     addPlayerMove(keyCode) {
         for(let i = 0; i < this.aPossibleMoves.length; i++) {
             if(this.aPossibleMoves[i].key === keyCode) {
-                this.aPlayerMoves.push(this.aPossibleMoves[i].position);
-                this.ditto.direction = this.aPlayerMoves[this.aPlayerMoves.length - 1];
+                this.aPlayerMoves.push(new CSArrow(this.aPossibleMoves[i].direction, this.aPlayerMoves.length));
+                this.ditto.direction = this.aPlayerMoves[this.aPlayerMoves.length - 1].direction;
+                console.log(this.aPossibleMoves[i].direction);
             }
         }
     }
@@ -226,11 +227,26 @@ class ClefairySays {
     processPlayerTurn(){
         this.time.current = Date.now();
         this.boardMessages.message = "playerTurn";
-        if(this.time.current - this.time.turnStart > 1500) {
+        if(this.time.current - this.time.turnStart > 1000) {
             this.boardMessages.display = false;
-            this.playerActionStart = true;
+            if(this.aPlayerMoves.length < this.aMoves.length && (this.time.current - this.time.playerAction > 500 || !this.time.playerAction)) {
+                this.playerActionStart = true;
+                this.playerArrowsPhase();
+            } else {
+                this.playerActionStart = false;
+                this.playerArrowsPhase();
+            }
         }
 
+        if(this.time.current - this.time.playerAction > 500) {
+            this.ditto.direction = "normal";
+        }
+    }
+
+    playerArrowsPhase() {
+        for(let i = 0; i < this.aPlayerMoves.length; i++) {
+            this.aPlayerMoves[i].draw(this);
+        }
     }
 
     // over
