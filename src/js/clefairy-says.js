@@ -38,6 +38,7 @@ class ClefairySays {
             "current": null,
             "turnStart": null,
             "actionStart": null,
+            "validationStart": null,
         }
         this.currentStep = undefined;
     }
@@ -72,7 +73,8 @@ class ClefairySays {
         this.playerActionStart = false;
         this.playerMovesValidation = false;
         this.score = 0;
-        this.aMoves = [];
+        this.errorCount = 0;
+        this.aIaMoves = [];
         this.aPlayerMoves = [];
     }
 
@@ -89,6 +91,7 @@ class ClefairySays {
         // check state of the game
         if(this.started) {
             this.ditto.draw(this);
+            console.log(this.ditto.direction);
             this.checkState();
         } else {
             this.starting.draw(this);
@@ -147,10 +150,10 @@ class ClefairySays {
     }
 
     giveMove() {
-        // Create arrow with random index in aPossibleMoves and push it to aMoves
-        this.aMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aMoves.length));
-        this.aMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aMoves.length));
-        console.log(this.aMoves);
+        // Create arrow with random index in aPossibleMoves and push it to aIaMoves
+        this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
+        this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
+        console.log(this.aIaMoves);
     }
 
     addPlayerMove(keyCode) {
@@ -166,7 +169,7 @@ class ClefairySays {
     initIaTurn() {
         this.iaTurn = true;
         this.time.turnStart = Date.now();
-        this.aMoves = [];
+        this.aIaMoves = [];
         this.currentStep = 0;
         this.giveMove();
     }
@@ -193,14 +196,14 @@ class ClefairySays {
         if(this.time.current - this.time.actionStart > 1000) {
             this.clefairy.direction = "normal";
         } else {
-            this.clefairy.direction = this.aMoves[this.currentStep].direction;
+            this.clefairy.direction = this.aIaMoves[this.currentStep].direction;
         }
         this.iaArrowsPhase();
-        if((this.time.current - this.time.actionStart > 1400) && this.currentStep < this.aMoves.length) {
+        if((this.time.current - this.time.actionStart > 1400) && this.currentStep < this.aIaMoves.length) {
             this.currentStep++;
             this.time.actionStart = Date.now();
         }
-        if(this.currentStep >= this.aMoves.length) {
+        if(this.currentStep >= this.aIaMoves.length) {
             this.iaTurn = false;
             this.initPlayerTurn();
         }
@@ -209,7 +212,7 @@ class ClefairySays {
     iaArrowsPhase() {
         this.boardMessages.display = false;
         for(let i = 0; i <= this.currentStep; i++) {
-            this.aMoves[i].draw(this);
+            this.aIaMoves[i].draw(this);
         }
     }
 
@@ -218,6 +221,7 @@ class ClefairySays {
         this.boardMessages.display = true;
         this.aPlayerMoves = [];
         this.time.turnStart = Date.now();
+        this.currentStep = 0;
     }
 
 
@@ -226,19 +230,23 @@ class ClefairySays {
         this.boardMessages.message = "playerTurn";
         if(this.time.current - this.time.turnStart > 1000) {
             this.boardMessages.display = false;
-            if(this.aPlayerMoves.length < this.aMoves.length && (this.time.current - this.time.playerAction > 500 || !this.time.playerAction)) {
+            if(this.aPlayerMoves.length < this.aIaMoves.length && (this.time.current - this.time.playerAction > 500 || !this.time.playerAction)) {
                 this.playerActionStart = true;
                 this.playerArrowsPhase();
             } else {
                 this.playerArrowsPhase();
                 this.playerActionStart = false;
                 if(this.time.current - this.time.playerAction > 1000) {
+                    this.playerMovesValidation = true;
                     this.validateMoves();
                 }
             }
         }
-        if(this.time.current - this.time.playerAction > 500) {
-            this.ditto.direction = "normal";
+        if(!this.playerMovesValidation) {
+            this.time.validationStart = Date.now();
+            if(this.time.current - this.time.playerAction > 500) {
+                this.ditto.direction = "normal";
+            }
         }
     }
 
@@ -251,9 +259,25 @@ class ClefairySays {
     }
 
     validateMoves() {
-        this.playerMovesValidation = true;
-        for(let i = 0; i <= this.aPlayerMoves.length; i++) {
-            this.ditto.direction = this.aPlayerMoves[i].direction;
+        this.time.current = Date.now();
+
+        if(this.currentStep < this.aPlayerMoves.length) {
+            this.clefairy.direction = this.aIaMoves[this.currentStep].direction;
+            this.ditto.direction = this.aPlayerMoves[this.currentStep].direction;
+        }
+        if(this.time.current - this.time.validationStart > 500) {
+            this.clefairy.direction = "normal";
+            this.ditto.direction = "normal";
+        }
+        if((this.time.current - this.time.validationStart > 800) && this.currentStep < this.aPlayerMoves.length) {
+            if(this.aPlayerMoves[this.currentStep].direction !== this.aIaMoves[this.currentStep].direction) {
+                this.errorCount++;
+            }
+            this.currentStep++;
+            this.time.validationStart = Date.now();
+        }
+        if(this.currentStep >= this.aPlayerMoves.length) {
+            console.log(this.errorCount);
         }
     }
 
