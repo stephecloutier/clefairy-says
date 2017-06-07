@@ -6,8 +6,20 @@
  */
 
  class CSBoardMessages {
-     constructor(width, height) {
+     constructor(width, message) {
+         this.message = message;
+         this.display = true;
          this.messages = {
+             "gameTitle": {
+                  "sx": 584,
+                  "sy": 632,
+                  "sw": 146,
+                  "sh": 60,
+                  "dx": (width - 146) / 2,
+                  "dy": 84,
+                  "dw": 146,
+                  "dh": 60,
+             },
              "memorize": {
                  "sx": 316,
                  "sy": 734,
@@ -31,7 +43,7 @@
          };
      }
 
-     draw(game, name) {
-         game.drawSpriteFromFrames(this.messages[name]);
+     draw(game) {
+         game.drawSpriteFromFrames(this.messages[this.message]);
      }
  }
