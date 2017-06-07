@@ -6,9 +6,11 @@
  */
 
 class CSClefairy {
-    constructor(width, height) {
-        this.sprites = {
-            "model": {
+    constructor(width, version, direction) {
+        this.version = version;
+        this.direction = direction;
+        this.versions = {
+            "clefairy": {
                 "normal": {
                     "sx": 0,
                     "sy": 0,
@@ -121,19 +123,7 @@ class CSClefairy {
 
     }
 
-    draw(game, version, move) {
-        game.drawSpriteFromFrames(this.sprites[version][move]);
-    }
-
-    handleAction(oEvent, game) {
-        if(oEvent.keyCode === 37 || oEvent.keyCode === 38 || oEvent.keyCode === 39 || oEvent.keyCode === 40 ) {
-            for(let i = 0; i < game.aPossibleMoves.length; i++) {
-                if(game.aPossibleMoves[i].key === oEvent.keyCode) {
-                    game.aPlayerMoves.push(game.aPossibleMoves[i].position)
-                    console.log(game.aPlayerMoves);
-                    this.draw(game, "ditto", game.aPlayerMoves[game.aPlayerMoves.length - 1]);
-                }
-            }
-        }
+    draw(game) {
+        game.drawSpriteFromFrames(this.versions[this.version][this.direction]);
     }
 }
