@@ -193,10 +193,12 @@ class ClefairySays {
     iaIntroPhase() {
         this.boardMessages.message = "memorize";
         this.modelEmotes.emote = "careful";
+        this.dittoEmotes.display = false;
         this.time.actionStart = Date.now();
     }
 
     iaDancingPhase() {
+        this.modelEmotes.display = false;
         this.time.current = Date.now();
         if(this.time.current - this.time.actionStart > 1000) {
             this.clefairy.direction = "normal";
@@ -224,6 +226,7 @@ class ClefairySays {
     initPlayerTurn() {
         this.playerTurn = true;
         this.boardMessages.display = true;
+        this.dittoEmotes.display = false;
         this.aPlayerMoves = [];
         this.time.turnStart = Date.now();
         this.currentStep = 0;
@@ -251,6 +254,7 @@ class ClefairySays {
             this.time.validationStart = Date.now();
             if(this.time.current - this.time.playerAction > 500) {
                 this.ditto.direction = "normal";
+                this.dittoEmotes.display = false;
             }
         }
     }
@@ -269,12 +273,21 @@ class ClefairySays {
         if(this.currentStep < this.aPlayerMoves.length) {
             this.clefairy.direction = this.aIaMoves[this.currentStep].direction;
             this.ditto.direction = this.aPlayerMoves[this.currentStep].direction;
+            this.modelEmotes.display = true;
+            this.dittoEmotes.display = true;
+            if(this.aPlayerMoves[this.currentStep].direction !== this.aIaMoves[this.currentStep].direction) {
+                this.modelEmotes.emote = "upset";
+                this.dittoEmotes.emote = "careful";
+            } else {
+                this.modelEmotes.emote = "happy";
+                this.dittoEmotes.emote = "music";
+            }
         }
         if(this.time.current - this.time.validationStart > 500) {
             this.clefairy.direction = "normal";
             this.ditto.direction = "normal";
         }
-        if((this.time.current - this.time.validationStart > 800) && this.currentStep < this.aPlayerMoves.length) {
+        if((this.time.current - this.time.validationStart > 1000) && this.currentStep < this.aPlayerMoves.length) {
             if(this.aPlayerMoves[this.currentStep].direction !== this.aIaMoves[this.currentStep].direction) {
                 this.errorsCount++;
             }
@@ -283,9 +296,10 @@ class ClefairySays {
         }
         if(this.currentStep >= this.aPlayerMoves.length) {
             console.log(this.errorsCount);
+            this.modelEmotes.display = false;
+            this.dittoEmotes.display = false;
         }
     }
-
 
 
     // over

@@ -50,11 +50,9 @@ class CSStarting {
                 this.currentStep++;
             }
             this.time.start = Date.now();
-            //console.log(game.modelEmotes.dy);
         }
 
         // Clefairy + emote draw
         game.clefairy.direction = this.direction;
-        game.modelEmotes.draw(game, "happy");
     }
 }
