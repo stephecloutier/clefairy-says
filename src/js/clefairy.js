@@ -131,6 +131,7 @@ class CSClefairy {
                 if(game.aPossibleMoves[i].key === oEvent.keyCode) {
                     game.aPlayerMoves.push(game.aPossibleMoves[i].position)
                     console.log(game.aPlayerMoves);
+                    this.draw(game, "ditto", game.aPlayerMoves[game.aPlayerMoves.length - 1]);
                 }
             }
         }
