@@ -58,10 +58,10 @@ class ClefairySays {
         this.starting = new CSStarting(width, height);
         this.boardMessages = new CSBoardMessages(width, height);
         this.modelEmotes = new CSEmotes(width, height, 186);
-        this.clefairy = new CSClefairy(width, height);
-        //this.arrows = new CSArrows(width, height);
-        //this.ditto = new CSDitto(width, height);
         //this.dittoEmotes = new CSEmotes(width, height, dy!)
+        this.clefairy = new CSClefairy(width, height);
+        //this.ditto = new CSDitto(width, height);
+
         //this.gameOver = new CSGameOver(width, height);
 
         // init game-related properties
@@ -71,7 +71,7 @@ class ClefairySays {
         this.playerTurn = false;
         this.score = 0;
         this.aMoves = [];
-
+        this.aPlayerMoves = [];
     }
 
     animate() {
@@ -124,7 +124,7 @@ class ClefairySays {
             this.processIaTurn();
         }
         if(this.playerTurn) {
-            this.validateMoves();
+            //this.processPlayerTurn();
         }
     }
 
@@ -135,11 +135,14 @@ class ClefairySays {
     }
 
     giveMove() {
-        // Push random move with its corresponding index in aPossibleMoves to aMoves
-        this.aMoves.push(this.aPossibleMoves[Math.floor(Math.random() * 4)].position);
-        this.aMoves.push(this.aPossibleMoves[Math.floor(Math.random() * 4)].position);
-        this.aMoves.push(this.aPossibleMoves[Math.floor(Math.random() * 4)].position);
-        this.aMoves.push(this.aPossibleMoves[Math.floor(Math.random() * 4)].position);
+        // Create arrow with random index in aPossibleMoves and push it to aMoves
+        this.aMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].position, this.aMoves.length));
+        this.aMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].position, this.aMoves.length));
+        this.aMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].position, this.aMoves.length));
+        this.aMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].position, this.aMoves.length));
+
+        console.log(this.aMoves);
+
     }
 
     validateMoves() {
@@ -177,15 +180,43 @@ class ClefairySays {
 
     iaDancingPhase() {
         this.time.current = Date.now();
-        this.clefairy.draw(this, "model", this.aMoves[this.currentStep]);
-        if((this.time.current - this.time.actionStart > 1000) && this.currentStep < this.aMoves.length) {
+        if(this.time.current - this.time.actionStart > 1000) {
+            this.clefairy.draw(this, "model", "normal");
+        } else {
+            this.clefairy.draw(this, "model", this.aMoves[this.currentStep].direction);
+        }
+        this.iaArrowsPhase();
+        if((this.time.current - this.time.actionStart > 1400) && this.currentStep < this.aMoves.length) {
             this.currentStep++;
             this.time.actionStart = Date.now();
         }
         if(this.currentStep >= this.aMoves.length) {
             this.iaTurn = false;
-            this.playerTurn = true;
+            this.initPlayerTurn();
         }
+
+    }
+
+    iaArrowsPhase() {
+        for(let i = 0; i <= this.currentStep; i++) {
+            this.aMoves[i].draw(this);
+        }
+
+
+        //this.arrows.sprites[this.aMoves[this.currentStep]].dx += 37;
+        /*
+        if(this.aMoves.length % 10) {
+            this.arrows.sprites[this.aMoves[this.currentStep]].dx = 57;
+            this.arrows.sprites[this.aMoves[this.currentStep]].dy += 28;
+        }
+        */
+    }
+
+    initPlayerTurn() {
+        this.playerTurn = true;
+        this.aPlayerMoves = [];
+        this.time.turnStart = Date.now();
+        console.log('init player turn');
     }
 
 
