@@ -62,6 +62,7 @@ class ClefairySays {
         this.dittoEmotes = new CSEmotes(width, "happy", 365);
         this.clefairy = new CSClefairy(width, "clefairy", "normal");
         this.ditto = new CSClefairy(width, "ditto", "normal");
+        this.lifes = [new CSLife("alive", 0), new CSLife("alive", 1), new CSLife("alive", 2), new CSLife("alive", 3), new CSLife("alive", 4)];
 
         //this.gameOver = new CSGameOver(width, height);
 
@@ -91,12 +92,10 @@ class ClefairySays {
         if(this.boardMessages.display) {
             this.boardMessages.draw(this);
         }
+
         // check state of the game
         if(this.started) {
             this.ditto.draw(this);
-            if(this.dittoEmotes.display) {
-                this.dittoEmotes.draw(this);
-            }
             this.checkState();
         } else {
             this.starting.draw(this);
@@ -145,6 +144,14 @@ class ClefairySays {
         }
         if(this.playerTurn) {
             this.processPlayerTurn();
+        }
+        if(this.dittoEmotes.display) {
+            this.dittoEmotes.draw(this);
+        }
+        if(this.lifes.display) {
+            for(let i = 0; i < this.lifes.length; i++) {
+                this.lifes[i].draw(this);
+            }
         }
     }
 
@@ -269,7 +276,8 @@ class ClefairySays {
 
     validateMoves() {
         this.time.current = Date.now();
-
+        this.lifes.display = true;
+        this.lifes.status = "alive";
         if(this.currentStep < this.aPlayerMoves.length) {
             this.clefairy.direction = this.aIaMoves[this.currentStep].direction;
             this.ditto.direction = this.aPlayerMoves[this.currentStep].direction;
@@ -290,6 +298,8 @@ class ClefairySays {
         if((this.time.current - this.time.validationStart > 1000) && this.currentStep < this.aPlayerMoves.length) {
             if(this.aPlayerMoves[this.currentStep].direction !== this.aIaMoves[this.currentStep].direction) {
                 this.errorsCount++;
+                this.lifes[this.errorsCount - 1].status = "dead";
+                this.lifes[this.errorsCount - 1].index = [this.errorsCount - 1]; // dead index ne s'incrémente pas
             }
             this.currentStep++;
             this.time.validationStart = Date.now();
