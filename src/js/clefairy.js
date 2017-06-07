@@ -125,7 +125,14 @@ class CSClefairy {
         game.drawSpriteFromFrames(this.sprites[version][move]);
     }
 
-    update(game, version) {
-        console.log('les commandes ont changées dendroit');
+    handleAction(oEvent, game) {
+        if(oEvent.keyCode === 37 || oEvent.keyCode === 38 || oEvent.keyCode === 39 || oEvent.keyCode === 40 ) {
+            for(let i = 0; i < game.aPossibleMoves.length; i++) {
+                if(game.aPossibleMoves[i].key === oEvent.keyCode) {
+                    game.aPlayerMoves.push(game.aPossibleMoves[i].position)
+                    console.log(game.aPlayerMoves);
+                }
+            }
+        }
     }
 }

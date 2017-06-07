@@ -102,7 +102,9 @@ class ClefairySays {
 
         // Check if game has started
         if(this.started) {
-            this.checkState();
+            if(this.playerTurn) {
+                this.clefairy.handleAction(oEvent, this);
+            }
         } else {
             if(oEvent.keyCode === 13 || oEvent.keyCode === 32 || oEvent.type === "click") {
                 this.launchGame();
@@ -138,8 +140,6 @@ class ClefairySays {
         // Create arrow with random index in aPossibleMoves and push it to aMoves
         this.aMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].position, this.aMoves.length));
         this.aMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].position, this.aMoves.length));
-        this.aMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].position, this.aMoves.length));
-        this.aMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].position, this.aMoves.length));
 
         console.log(this.aMoves);
 
@@ -169,6 +169,7 @@ class ClefairySays {
         if(this.time.current - this.time.turnStart >= 2000) {
             this.iaDancingPhase();
         }
+        this.clefairy.draw(this, "ditto", "normal");
     }
 
     iaIntroPhase() {
@@ -207,13 +208,13 @@ class ClefairySays {
         this.playerTurn = true;
         this.aPlayerMoves = [];
         this.time.turnStart = Date.now();
-        console.log('init player turn');
     }
 
 
     processPlayerTurn(){
         this.clefairy.draw(this, "model", "normal");
         this.boardMessages.draw(this, "playerTurn");
+        this.clefairy.draw(this, "ditto", "normal");
     }
 
     // over
