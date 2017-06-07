@@ -73,7 +73,7 @@ class ClefairySays {
         this.playerActionStart = false;
         this.playerMovesValidation = false;
         this.score = 0;
-        this.errorCount = 0;
+        this.errorsCount = 0;
         this.aIaMoves = [];
         this.aPlayerMoves = [];
     }
@@ -271,13 +271,13 @@ class ClefairySays {
         }
         if((this.time.current - this.time.validationStart > 800) && this.currentStep < this.aPlayerMoves.length) {
             if(this.aPlayerMoves[this.currentStep].direction !== this.aIaMoves[this.currentStep].direction) {
-                this.errorCount++;
+                this.errorsCount++;
             }
             this.currentStep++;
             this.time.validationStart = Date.now();
         }
         if(this.currentStep >= this.aPlayerMoves.length) {
-            console.log(this.errorCount);
+            console.log(this.errorsCount);
         }
     }
 
