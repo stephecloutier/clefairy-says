@@ -33,6 +33,8 @@ class CSStarting {
         // Drawing still frames
         game.boardMessages.message = "gameTitle";
         game.drawSpriteFromFrames(this.button);
+        game.modelEmotes.emote = "happy";
+        game.modelEmotes.display = true;
 
         this.time.current = Date.now();
 
@@ -40,14 +42,15 @@ class CSStarting {
         if(this.time.current - this.time.start > 300) {
             if(this.currentStep) {
                 this.direction = "down";
-                game.modelEmotes.emotes.happy.dy -= 4;
+                game.modelEmotes.emotes[game.modelEmotes.emote].dy -= 4;
                 this.currentStep = 0;
             } else {
                 this.direction = "normal";
-                game.modelEmotes.emotes.happy.dy += 4;
+                game.modelEmotes.emotes[game.modelEmotes.emote].dy += 4;
                 this.currentStep++;
             }
             this.time.start = Date.now();
+            //console.log(game.modelEmotes.dy);
         }
 
         // Clefairy + emote draw

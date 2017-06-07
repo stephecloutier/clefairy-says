@@ -6,7 +6,9 @@
  */
 
  class CSEmotes {
-     constructor(width, height, dy) {
+     constructor(width, emote, dy) {
+         this.emote = emote;
+         this.display = true;
          this.emotes = {
              "happy": {
                  "sx": 484,
@@ -71,7 +73,7 @@
          };
      }
 
-     draw(game, emote) {
-         game.drawSpriteFromFrames(this.emotes[emote]);
+     draw(game) {
+         game.drawSpriteFromFrames(this.emotes[this.emote]);
      }
  }

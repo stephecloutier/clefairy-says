@@ -58,8 +58,8 @@ class ClefairySays {
         this.background = new CSBackground(width, height);
         this.starting = new CSStarting(width, height);
         this.boardMessages = new CSBoardMessages(width, "gameTitle", true);
-        this.modelEmotes = new CSEmotes(width, height, 186);
-        //this.dittoEmotes = new CSEmotes(width, height, dy!)
+        this.modelEmotes = new CSEmotes(width, "happy", 186);
+        this.dittoEmotes = new CSEmotes(width, "happy", 365);
         this.clefairy = new CSClefairy(width, "clefairy", "normal");
         this.ditto = new CSClefairy(width, "ditto", "normal");
 
@@ -85,13 +85,18 @@ class ClefairySays {
         this.context.clearRect(0, 0, this.width, this.height);
         this.background.draw(this);
         this.clefairy.draw(this);
+        if(this.modelEmotes.display) {
+            this.modelEmotes.draw(this);
+        }
         if(this.boardMessages.display) {
             this.boardMessages.draw(this);
         }
         // check state of the game
         if(this.started) {
             this.ditto.draw(this);
-            console.log(this.ditto.direction);
+            if(this.dittoEmotes.display) {
+                this.dittoEmotes.draw(this);
+            }
             this.checkState();
         } else {
             this.starting.draw(this);
@@ -187,7 +192,7 @@ class ClefairySays {
 
     iaIntroPhase() {
         this.boardMessages.message = "memorize";
-        this.modelEmotes.draw(this, "careful");
+        this.modelEmotes.emote = "careful";
         this.time.actionStart = Date.now();
     }
 
