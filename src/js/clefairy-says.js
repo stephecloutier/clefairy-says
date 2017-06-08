@@ -182,9 +182,10 @@ class ClefairySays {
     }
 
     initIaTurn() {
+        console.log('init ia turn');
         this.iaTurn = true;
+        this.lifes.display = false;
         this.time.turnStart = Date.now();
-        this.aIaMoves = [];
         this.currentStep = 0;
         this.giveMove();
     }
@@ -271,7 +272,7 @@ class ClefairySays {
     }
 
     playerArrowsPhase() {
-        if(!this.playerMovesValidation) {
+        if(!this.playerMovesValidation || !this.playerTurn) {
             for(let i = 0; i < this.aPlayerMoves.length; i++) {
                 this.aPlayerMoves[i].draw(this);
             }
@@ -317,17 +318,17 @@ class ClefairySays {
 
         // ending validation phase when all moves have been compare
         if(this.currentStep >= this.aPlayerMoves.length) {
-            console.log(this.errorsCount);
+            //console.log(this.errorsCount);
             this.modelEmotes.display = false;
             this.dittoEmotes.display = false;
             if(this.errorsCount === 5) {
                 this.started = false;
                 this.ended = true;
             } else {
-                this.iaTurn = true;
                 this.playerTurn = false;
                 this.playerAction = false;
                 this.playerMovesValidation = false;
+                this.initIaTurn();
             }
 
         }
