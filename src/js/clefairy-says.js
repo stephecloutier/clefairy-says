@@ -44,16 +44,16 @@ class ClefairySays {
         // load sounds
         this.percussionMusic = new Audio("./resources/music_percussions.mp3");
         this.percussionMusic.volume = 0.2;
-        this.percussionMusic.play();
-        console.log(this.percussionMusic);
-
-        this.aliveMusic = new Audio("./resources/music_alive.mp3");
-        this.aliveMusic.volume = 0.6;
 
         this.deadMusic = new Audio("./resources/music_dead.mp3");
-        this.deadMusic.volume = 0.6;
+        this.deadMusic.volume = 0.2;
 
-        this.clefairySounds = [new Audio("./resources/clefairy1.mp3"), new Audio("./resources/clefairy2.mp3"), new Audio("./resources/clefairy3.mp3"), new Audio("./resources/clefairy4.mp3")];
+        this.clefairySounds = {
+            "left": new Audio("./resources/clefairy1.mp3"),
+            "up": new Audio("./resources/clefairy2.mp3"),
+            "right": new Audio("./resources/clefairy3.mp3"),
+            "down": new Audio("./resources/clefairy4.mp3")
+        };
         this.clefairySounds.volume = 1;
     }
 
@@ -92,6 +92,8 @@ class ClefairySays {
         this.errorsCount = 0;
         this.aIaMoves = [];
         this.aPlayerMoves = [];
+        this.deadMusic.pause();
+        this.deadMusic.currentTime = 0;
     }
 
     animate() {
@@ -113,12 +115,15 @@ class ClefairySays {
 
         // repeat music
         this.repeatMusic(this.percussionMusic, 2, 5);
-
+        
         // check state of the game
         if(this.started) {
             this.ditto.draw(this);
             this.checkState();
         } else if(this.ended) {
+            this.deadMusic.play();
+            this.percussionMusic.pause();
+            this.percussionMusic.currentTime = 0;
             this.over();
             this.gameOver.draw(this);
             /* Tried to animate game over, but lacking time
@@ -130,6 +135,7 @@ class ClefairySays {
             */
         } else {
             this.dittoEmotes.display = false;
+            this.percussionMusic.play();
             this.starting.draw(this);
         }
     }
@@ -193,6 +199,10 @@ class ClefairySays {
     giveMove() {
         // Create arrow with random index in aPossibleMoves and push it to aIaMoves
         this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
+        this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
+        this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
+        this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
+        this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
     }
 
     addPlayerMove(keyCode) {
@@ -200,6 +210,7 @@ class ClefairySays {
             if(this.aPossibleMoves[i].key === keyCode) {
                 this.aPlayerMoves.push(new CSArrow(this.aPossibleMoves[i].direction, this.aPlayerMoves.length));
                 this.ditto.direction = this.aPlayerMoves[this.aPlayerMoves.length - 1].direction;
+                this.clefairySounds[this.aPlayerMoves[this.aPlayerMoves.length - 1].direction].play();
             }
         }
     }
@@ -210,6 +221,7 @@ class ClefairySays {
         this.time.turnStart = Date.now();
         this.currentStep = 0;
         this.giveMove();
+        this.musicValidation = false;
     }
 
     processIaTurn() {
@@ -236,6 +248,7 @@ class ClefairySays {
             this.clefairy.direction = "normal";
         } else {
             this.clefairy.direction = this.aIaMoves[this.currentStep].direction;
+            this.clefairySounds[this.aIaMoves[this.currentStep].direction].play();
         }
         this.iaArrowsPhase();
         if((this.time.current - this.time.actionStart > 1400) && this.currentStep < this.aIaMoves.length) {
@@ -269,16 +282,18 @@ class ClefairySays {
         this.time.current = Date.now();
         if(this.time.current - this.time.turnStart > 1000) {
             delete this.boardMessages.playerTurn;
-            if(this.aPlayerMoves.length < this.aIaMoves.length && (this.time.current - this.time.playerAction > 500 || !this.time.playerAction)) {
+            if(this.aPlayerMoves.length < this.aIaMoves.length && (this.time.current - this.time.playerAction > 1100 || !this.time.playerAction)) {
                 this.playerActionStart = true;
                 this.playerArrowsPhase();
             } else {
                 this.playerArrowsPhase();
                 this.playerActionStart = false;
-                if(this.time.current - this.time.playerAction > 1000) {
+                if(this.time.current - this.time.playerAction > 1600) {
                     this.lifes.display = true;
-                    this.playerMovesValidation = true;
-                    this.validateMoves();
+                    if(this.time.current - this.time.playerAction > 2100) {
+                        this.playerMovesValidation = true;
+                        this.validateMoves();
+                    }
                 } else {
                     this.validationEnded = false;
                 }
@@ -286,7 +301,7 @@ class ClefairySays {
         }
         if(!this.playerMovesValidation) {
             this.time.validationStart = Date.now();
-            if(this.time.current - this.time.playerAction > 500) {
+            if(this.time.current - this.time.playerAction > 900) {
                 this.ditto.direction = "normal";
                 this.dittoEmotes.display = false;
             }
@@ -294,7 +309,7 @@ class ClefairySays {
     }
 
     playerArrowsPhase() {
-        if(!this.playerMovesValidation || !this.playerTurn) {
+        if((!this.playerMovesValidation && !this.lifes.display) || !this.playerTurn) {
             for(let i = 0; i < this.aPlayerMoves.length; i++) {
                 this.aPlayerMoves[i].draw(this);
             }
@@ -357,7 +372,7 @@ class ClefairySays {
         this.modelEmotes.display = false;
         this.dittoEmotes.display = false;
 
-        if(this.time.current - this.time.validationStart > 1500) {
+        if(this.time.current - this.time.validationStart > 2000) {
             if(this.errorsCount >= 5) {
                 this.errorsCount = 5;
                 this.started = false;
