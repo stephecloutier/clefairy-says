@@ -21,12 +21,13 @@
      }
 
      draw(game) {
-         game.drawSpriteFromFrames(this.numbers[this.number]);
+         game.drawSpriteFromFrames(this.numbers);
      }
 
      increment() {
-         this.number = (this.number++ % 10);
+         this.number = (++this.number % 10);
          this.numbers.sy = this.number * 32;
+         console.log(!this.number);
          return !this.number;
      }
  }

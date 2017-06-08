@@ -12,7 +12,7 @@
 
      draw(game) {
          for(let i = 0; i < this.numbers.length; i++) {
-             game.drawSpriteFromFrames(this.numbers[i]);
+             this.numbers[i].draw(game);
          }
      }
 
@@ -20,7 +20,9 @@
          let changeUnit = false;
          let i = 1;
          do {
+             //console.log(this.numbers.length - i);
              changeUnit = this.numbers[this.numbers.length - i].increment();
+
              i++;
          } while(changeUnit);
      }
