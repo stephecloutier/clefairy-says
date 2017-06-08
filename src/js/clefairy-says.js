@@ -43,9 +43,18 @@ class ClefairySays {
 
         // load sounds
         this.percussionMusic = new Audio("./resources/music_percussions.mp3");
+        this.percussionMusic.volume = 0.2;
         this.percussionMusic.play();
         console.log(this.percussionMusic);
 
+        this.aliveMusic = new Audio("./resources/music_alive.mp3");
+        this.aliveMusic.volume = 0.6;
+
+        this.deadMusic = new Audio("./resources/music_dead.mp3");
+        this.deadMusic.volume = 0.6;
+
+        this.clefairySounds = [new Audio("./resources/clefairy1.mp3"), new Audio("./resources/clefairy2.mp3"), new Audio("./resources/clefairy3.mp3"), new Audio("./resources/clefairy4.mp3")];
+        this.clefairySounds.volume = 1;
     }
 
     setup() {
