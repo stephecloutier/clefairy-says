@@ -27,7 +27,6 @@
      increment() {
          this.number = (++this.number % 10);
          this.numbers.sy = this.number * 32;
-         console.log(!this.number);
          return !this.number;
      }
  }

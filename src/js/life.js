@@ -30,7 +30,7 @@ class CSLife {
                 "dy": 87,
                 "dw": 36,
                 "dh": 59,
-
+            },
                 /*
                 "ballOpen": {
                     "sx": 655,
@@ -63,9 +63,10 @@ class CSLife {
                     "dh": 59,
                 },
                 */
-            },
         };
-        this.sprites[status].dx += this.index * 44;
+        for(let sprite in this.sprites) {
+            this.sprites[sprite].dx += this.index * 44;
+        }
     }
 
     draw(game) {
@@ -74,6 +75,7 @@ class CSLife {
             game.drawSpriteFromFrames(this.sprites["dead"]);
         }
         */
+
         game.drawSpriteFromFrames(this.sprites[this.status]);
     }
 }

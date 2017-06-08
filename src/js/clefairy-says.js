@@ -308,17 +308,16 @@ class ClefairySays {
                     this.currentStep++;
                     this.time.validationStart = Date.now();
                     this.score.increment();
-                    //console.log(this.score.numbers[3].numbers.sy);
                 }
             } else {
                 this.modelEmotes.emote = "upset";
                 this.dittoEmotes.emote = "careful";
+                if(this.errorsCount < 5) {
+                    console.log(this.errorsCount);
+                    this.lifes[this.errorsCount].status = "dead";
+                }
                 if((this.time.current - this.time.validationStart > 1000) && this.currentStep < this.aIaMoves.length) {
                     this.errorsCount++;
-                    if(this.errorsCount <= 5) {
-                        this.lifes[this.errorsCount - 1].status = "dead";
-                        this.lifes[this.errorsCount - 1].index = [this.errorsCount - 1]; // dead index ne s'incrémente pas
-                    }
                     this.currentStep++;
                     this.time.validationStart = Date.now();
                 }
