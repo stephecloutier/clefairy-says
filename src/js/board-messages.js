@@ -5,10 +5,9 @@
  * coded by Stéphanie Cloutier
  */
 
- class CSBoardMessages {
+ class CSBoardMessage {
      constructor(width, message) {
          this.message = message;
-         this.display = true;
          this.messages = {
              "gameTitle": {
                   "sx": 584,
@@ -40,6 +39,26 @@
                  "dw": 146,
                  "dh": 26,
              },
+             "gameOver": {
+                 "sx": 741,
+                 "sy": 632,
+                 "sw": 172,
+                 "sh": 26,
+                 "dx": (width - 172) / 2,
+                 "dy": 70,
+                 "dw": 172,
+                 "dh": 26,
+             },
+             "score": {
+                 "sx": 741,
+                 "sy": 632,
+                 "sw": 172,
+                 "sh": 26,
+                 "dx": (width - 172) / 2,
+                 "dy": 70,
+                 "dw": 172,
+                 "dh": 26,
+             }
          };
      }
 

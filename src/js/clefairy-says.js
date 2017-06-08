@@ -57,7 +57,7 @@ class ClefairySays {
 
         this.background = new CSBackground(width, height);
         this.starting = new CSStarting(width, height);
-        this.boardMessages = new CSBoardMessages(width, "gameTitle", true);
+        this.boardMessages = [];
         this.modelEmotes = new CSEmotes(width, "happy", 186);
         this.dittoEmotes = new CSEmotes(width, "happy", 365);
         this.clefairy = new CSClefairy(width, "clefairy", "normal");
@@ -90,9 +90,11 @@ class ClefairySays {
         if(this.modelEmotes.display) {
             this.modelEmotes.draw(this);
         }
-        if(this.boardMessages.display) {
-            this.boardMessages.draw(this);
+        for(let message in this.boardMessages) {
+            this.boardMessages[message].draw(this);
+            console.log(this.boardMessages);
         }
+
 
         // check state of the game
         if(this.started) {
@@ -158,6 +160,7 @@ class ClefairySays {
     }
 
     launchGame() {
+        delete this.boardMessages.gameTitle;
         this.started = true;
         this.initIaTurn();
         this.checkState();
@@ -204,8 +207,7 @@ class ClefairySays {
     }
 
     iaIntroPhase() {
-        this.boardMessages.display = true;
-        this.boardMessages.message = "memorize";
+        this.boardMessages.memorize = new CSBoardMessage(this.width, "memorize");
         this.modelEmotes.emote = "careful";
         this.dittoEmotes.display = false;
         this.time.actionStart = Date.now();
@@ -231,7 +233,7 @@ class ClefairySays {
     }
 
     iaArrowsPhase() {
-        this.boardMessages.display = false;
+        delete this.boardMessages.memorize;
         for(let i = 0; i <= this.currentStep; i++) {
             this.aIaMoves[i].draw(this);
         }
@@ -239,7 +241,7 @@ class ClefairySays {
 
     initPlayerTurn() {
         this.playerTurn = true;
-        this.boardMessages.display = true;
+        this.boardMessages.playerTurn = new CSBoardMessage(this.width, "playerTurn");
         this.dittoEmotes.display = false;
         this.aPlayerMoves = [];
         this.time.turnStart = Date.now();
@@ -249,9 +251,9 @@ class ClefairySays {
 
     processPlayerTurn(){
         this.time.current = Date.now();
-        this.boardMessages.message = "playerTurn";
+        //this.boardMessages.message = "playerTurn";
         if(this.time.current - this.time.turnStart > 1000) {
-            this.boardMessages.display = false;
+            delete this.boardMessages.playerTurn;
             if(this.aPlayerMoves.length < this.aIaMoves.length && (this.time.current - this.time.playerAction > 500 || !this.time.playerAction)) {
                 this.playerActionStart = true;
                 this.playerArrowsPhase();
@@ -348,6 +350,7 @@ class ClefairySays {
 
 
     over() {
+        this.boardMessages.gameOver = new CSBoardMessage(this.width, "gameOver");
         console.log("Game over screen");
     }
 

@@ -31,7 +31,7 @@ class CSStarting {
 
     draw(game) {
         // Drawing still frames
-        game.boardMessages.message = "gameTitle";
+        game.boardMessages.gameTitle = new CSBoardMessage(game.width, "gameTitle");
         game.drawSpriteFromFrames(this.button);
         game.modelEmotes.emote = "happy";
         game.modelEmotes.display = true;
