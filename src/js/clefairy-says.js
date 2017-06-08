@@ -18,7 +18,7 @@ class ClefairySays {
         this.animationRequestId = null;
 
         // init variables
-        this.aGameKeys = [32, 13, 38, 40, 37, 39, 65, 66];
+        this.aGameKeys = [32, 13, 38, 40, 37, 39, 65, 66, 27, 8];
         this.aPossibleMoves = [
             {"key": 37, "direction": "left"},
             {"key": 38, "direction": "up"},
@@ -60,6 +60,10 @@ class ClefairySays {
         this.goodSound.volume = 0.1;
         this.wrongSound = new Audio("./resources/wrong.mp3");
         this.wrongSound.volume = 0.1;
+
+        this.click = {};
+
+        this.aFreeCheck = ["up", "up", "down", "down", "left", "right", "left", "right", 66, 65];
     }
 
     setup() {
@@ -75,7 +79,7 @@ class ClefairySays {
         let {width, height} = this;
 
         this.background = new CSBackground(width, height);
-        this.starting = new CSStarting(width, height);
+        this.starting = new CSStarting();
         this.boardMessages = [];
         this.modelEmotes = new CSEmotes(width, "happy", 186);
         this.dittoEmotes = new CSEmotes(width, "happy", 365);
@@ -84,10 +88,12 @@ class ClefairySays {
         this.lifes = [new CSLife("alive", 0), new CSLife("alive", 1), new CSLife("alive", 2), new CSLife("alive", 3), new CSLife("alive", 4)];
         this.score = new CSScore(0);
         this.gameOver = new CSGameOver(width);
+        this.goBack = new CSGoBack();
 
         // init game-related properties
         this.started = false;
         this.ended = false;
+        this.freePlay = false;
         this.iaTurn = false;
         this.playerTurn = false;
         this.playerActionStart = false;
@@ -97,9 +103,11 @@ class ClefairySays {
         this.errorsCount = 0;
         this.aIaMoves = [];
         this.aPlayerMoves = [];
+        this.aFreeMoves = [];
         this.deadMusic.pause();
         this.deadMusic.currentTime = 0;
         this.soundPlayed = false;
+        this.win = false;
     }
 
     animate() {
@@ -139,11 +147,23 @@ class ClefairySays {
                 this.currentStep = 0;
             }
             */
+        } else if(this.freePlay) {
+            this.percussionMusic.play();
+            this.modelEmotes.emote = "heart";
+            this.goBack.draw(this);
+            this.boardMessages.yourTurn = new CSBoardMessage(this.width, "playerTurn");
+            if(this.win) {
+                delete this.boardMessages.yourTurn;
+                this.boardMessages.youWon = new CSBoardMessage(this.width, "youWon");
+                this.modelEmotes.emote = "happy";
+            }
+
         } else {
             this.dittoEmotes.display = false;
             this.percussionMusic.play();
             this.starting.draw(this);
         }
+
     }
 
     handleAction(oEvent) {
@@ -154,6 +174,9 @@ class ClefairySays {
         }
         if(oEvent.type == "keyup" && !this.aGameKeys.find(fValidateKey)) {
             return;
+        }
+        if(oEvent.type === "click") {
+            this.canvasClick(oEvent);
         }
 
         // Check if game has started
@@ -167,8 +190,29 @@ class ClefairySays {
                 }
             }
         } else {
-            if(oEvent.keyCode === 13 || oEvent.keyCode === 32 || oEvent.type === "click") {
-                this.launchGame();
+            if(oEvent.keyCode === 13 || oEvent.keyCode === 32 || oEvent.keyCode === 37 || (oEvent.type === "click" && this.click.x < this.width / 2)) {
+                if(!this.freePlay) {
+                    this.launchGame();
+                }
+            }
+            if(oEvent.keyCode === 39 || (oEvent.type === "click" && this.click.x > this.width / 2)) {
+                this.launchFreePlay();
+            }
+        }
+
+        if(this.freePlay) {
+            if((oEvent.type === "click" && this.click.x < this.width / 2) || oEvent.keyCode === 27 || oEvent.keyCode === 8) {
+                this.reset();
+                this.animate();
+                this.starting.draw(this);
+            }
+
+            if(oEvent.keyCode === 37 || oEvent.keyCode === 38 || oEvent.keyCode === 39 || oEvent.keyCode === 40 || oEvent.keyCode === 66 || oEvent.keyCode === 65) {
+                this.addFreeMove(oEvent.keyCode);
+                this.time.freeAction = Date.now();
+            }
+            if(oEvent.keyCode === 65) {
+                this.win = this.freeCheck();
             }
         }
 
@@ -181,18 +225,54 @@ class ClefairySays {
         }
     }
 
+    canvasClick(oEvent) {
+        this.click.x = oEvent.clientX - this.canvas.offsetLeft;
+        this.click.y = oEvent.clientY - this.canvas.offsetTop;
+    }
+
     checkState() {
-        if(this.iaTurn) {
-            this.processIaTurn();
-        }
-        if(this.playerTurn) {
-            this.processPlayerTurn();
-        }
-        if(this.lifes.display) {
-            for(let i = 0; i < this.lifes.length; i++) {
-                this.lifes[i].draw(this);
+        if(!this.freePlay) {
+            if(this.iaTurn) {
+                this.processIaTurn();
+            }
+            if(this.playerTurn) {
+                this.processPlayerTurn();
+            }
+            if(this.lifes.display) {
+                for(let i = 0; i < this.lifes.length; i++) {
+                    this.lifes[i].draw(this);
+                }
             }
         }
+    }
+
+    launchFreePlay() {
+        delete this.boardMessages.gameTitle;
+        this.freePlay = true;
+    }
+
+    addFreeMove(keyCode) {
+        if(keyCode !== 65 && keyCode !== 66) {
+            for(let i = 0; i < this.aPossibleMoves.length; i++) {
+                if(this.aPossibleMoves[i].key === keyCode) {
+                    this.aFreeMoves.push(new CSArrow(this.aPossibleMoves[i].direction, this.aFreeMoves.length));
+                    this.clefairy.direction = this.aFreeMoves[this.aFreeMoves.length - 1].direction;
+                    this.clefairySounds[this.aFreeMoves[this.aFreeMoves.length - 1].direction].play();
+                }
+            }
+        } else {
+            this.aFreeMoves.push(keyCode);
+        }
+    }
+
+    freeCheck() {
+        return this.aFreeMoves.slice(this.aFreeMoves.length - 11, this.aFreeMoves.length - 1).every((item, index) => {
+            if(typeof item !== "string") {
+                return item.direction === this.aFreeCheck[index];
+            } else {
+                return item === this.aFreeCheck[index];
+            }
+        });
     }
 
     launchGame() {
@@ -204,10 +284,6 @@ class ClefairySays {
 
     giveMove() {
         // Create arrow with random index in aPossibleMoves and push it to aIaMoves
-        this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
-        this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
-        this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
-        this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
         this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
     }
 
@@ -358,7 +434,6 @@ class ClefairySays {
                 this.dittoEmotes.emote = "careful";
 
                 if(this.errorsCount < 5) {
-                    console.log(this.errorsCount);
                     this.lifes[this.errorsCount].status = "dead";
                 }
                 if(!this.soundPlayed) {
