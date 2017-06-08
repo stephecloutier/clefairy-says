@@ -25,14 +25,6 @@ class ClefairySays {
             {"key": 39, "direction": "right"},
             {"key": 40, "direction": "down"},
         ];
-
-        // load spritesheet
-        this.sprites = new Image();
-        this.sprites.addEventListener("load", () => {
-            this.setup();
-        });
-        this.sprites.src = SPRITESHEET_PATH;
-
         this.time = {
             "start": Date.now(),
             "current": null,
@@ -41,6 +33,13 @@ class ClefairySays {
             "validationStart": null,
         }
         this.currentStep = undefined;
+
+        // load spritesheet
+        this.sprites = new Image();
+        this.sprites.addEventListener("load", () => {
+            this.setup();
+        });
+        this.sprites.src = SPRITESHEET_PATH;
     }
 
     setup() {
@@ -78,8 +77,6 @@ class ClefairySays {
         this.errorsCount = 0;
         this.aIaMoves = [];
         this.aPlayerMoves = [];
-
-
     }
 
     animate() {
@@ -178,12 +175,6 @@ class ClefairySays {
     giveMove() {
         // Create arrow with random index in aPossibleMoves and push it to aIaMoves
         this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
-        this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
-        this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
-        this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
-        this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
-        this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
-
     }
 
     addPlayerMove(keyCode) {

@@ -51,8 +51,6 @@ class CSStarting {
             }
             this.time.start = Date.now();
         }
-
-        // Clefairy + emote draw
         game.clefairy.direction = this.direction;
     }
 }

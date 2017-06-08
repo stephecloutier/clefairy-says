@@ -22,7 +22,7 @@ class CSLife {
                 "dh": 59,
             },
             "dead": {
-                "sx": 655,
+                "sx": 727,
                 "sy": 701,
                 "sw": 36,
                 "sh": 59,
@@ -63,17 +63,17 @@ class CSLife {
                     "dh": 59,
                 },
                 */
-            }
+            },
         };
         this.sprites[status].dx += this.index * 44;
     }
 
     draw(game) {
+        /* trying to start animate life lost, but lacking time
         if(this.status === "dead") {
             game.drawSpriteFromFrames(this.sprites["dead"]);
         }
-        game.drawSpriteFromFrames(this.sprites["alive"]);
-
-
+        */
+        game.drawSpriteFromFrames(this.sprites[this.status]);
     }
 }

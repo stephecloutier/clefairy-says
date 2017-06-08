@@ -120,7 +120,6 @@ class CSClefairy {
             "start": Date.now(),
             "current": null,
         };
-
     }
 
     draw(game) {

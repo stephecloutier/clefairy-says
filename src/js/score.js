@@ -20,9 +20,7 @@
          let changeUnit = false;
          let i = 1;
          do {
-             //console.log(this.numbers.length - i);
              changeUnit = this.numbers[this.numbers.length - i].increment();
-
              i++;
          } while(changeUnit);
      }
