@@ -165,6 +165,9 @@ class ClefairySays {
         // Create arrow with random index in aPossibleMoves and push it to aIaMoves
         this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
         this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
+        this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
+        this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
+
         console.log(this.aIaMoves);
     }
 
@@ -252,6 +255,7 @@ class ClefairySays {
                 this.playerArrowsPhase();
                 this.playerActionStart = false;
                 if(this.time.current - this.time.playerAction > 1000) {
+                    this.lifes.display = true;
                     this.playerMovesValidation = true;
                     this.validateMoves();
                 }
@@ -276,38 +280,56 @@ class ClefairySays {
 
     validateMoves() {
         this.time.current = Date.now();
-        this.lifes.display = true;
-        this.lifes.status = "alive";
+
+        // making both clefairy follow their array moves (aIaMoves and aPlayerMoves)
         if(this.currentStep < this.aPlayerMoves.length) {
             this.clefairy.direction = this.aIaMoves[this.currentStep].direction;
             this.ditto.direction = this.aPlayerMoves[this.currentStep].direction;
             this.modelEmotes.display = true;
             this.dittoEmotes.display = true;
-            if(this.aPlayerMoves[this.currentStep].direction !== this.aIaMoves[this.currentStep].direction) {
-                this.modelEmotes.emote = "upset";
-                this.dittoEmotes.emote = "careful";
-            } else {
-                this.modelEmotes.emote = "happy";
-                this.dittoEmotes.emote = "music";
-            }
         }
+
+        // each 500 milliseconds, changing pose to normal
         if(this.time.current - this.time.validationStart > 500) {
             this.clefairy.direction = "normal";
             this.ditto.direction = "normal";
         }
-        if((this.time.current - this.time.validationStart > 1000) && this.currentStep < this.aPlayerMoves.length) {
-            if(this.aPlayerMoves[this.currentStep].direction !== this.aIaMoves[this.currentStep].direction) {
+
+        // changing emotes according to success or fail, + errorsCount incrementation
+        if(this.aPlayerMoves[this.currentStep].direction !== this.aIaMoves[this.currentStep].direction) {
+            this.modelEmotes.emote = "upset";
+            this.dittoEmotes.emote = "careful";
+            if((this.time.current - this.time.validationStart > 1000) && this.currentStep < this.aPlayerMoves.length) {
                 this.errorsCount++;
                 this.lifes[this.errorsCount - 1].status = "dead";
                 this.lifes[this.errorsCount - 1].index = [this.errorsCount - 1]; // dead index ne s'incrémente pas
+                this.currentStep++;
+                this.time.validationStart = Date.now();
             }
-            this.currentStep++;
-            this.time.validationStart = Date.now();
+        } else {
+            this.modelEmotes.emote = "happy";
+            this.dittoEmotes.emote = "music";
+            if((this.time.current - this.time.validationStart > 1000) && this.currentStep < this.aPlayerMoves.length) {
+                this.currentStep++;
+                this.time.validationStart = Date.now();
+            }
         }
+
+        // ending validation phase when all moves have been compare
         if(this.currentStep >= this.aPlayerMoves.length) {
             console.log(this.errorsCount);
             this.modelEmotes.display = false;
             this.dittoEmotes.display = false;
+            if(this.errorsCount === 5) {
+                this.started = false;
+                this.ended = true;
+            } else {
+                this.iaTurn = true;
+                this.playerTurn = false;
+                this.playerAction = false;
+                this.playerMovesValidation = false;
+            }
+
         }
     }
 
