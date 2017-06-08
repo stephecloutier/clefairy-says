@@ -40,6 +40,12 @@ class ClefairySays {
             this.setup();
         });
         this.sprites.src = SPRITESHEET_PATH;
+
+        // load sounds
+        this.percussionMusic = new Audio("./resources/music_percussions.mp3");
+        this.percussionMusic.play();
+        console.log(this.percussionMusic);
+
     }
 
     setup() {
@@ -95,6 +101,9 @@ class ClefairySays {
         for(let message in this.boardMessages) {
             this.boardMessages[message].draw(this);
         }
+
+        // repeat music
+        this.repeatMusic(this.percussionMusic, 2, 5);
 
         // check state of the game
         if(this.started) {
@@ -364,5 +373,12 @@ class ClefairySays {
 
     drawSpriteFromFrames({sx, sy, sw, sh, dx, dy, dw, dh}) {
         this.context.drawImage(this.sprites, sx, sy, sw, sh, dx, dy, dw, dh);
+    }
+
+    repeatMusic(music, timeStart = 0, timeEnd = 0){
+        if(music.currentTime >= music.duration - timeEnd) {
+            music.currentTime = timeStart;
+            music.play();
+        }
     }
 }
