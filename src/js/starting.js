@@ -6,23 +6,13 @@
  */
 
 class CSStarting {
-    constructor() {
-        this.play = {
+    constructor(width, height) {
+        this.button = {
              "sx": 316,
              "sy": 540,
              "sw": 220,
              "sh": 92,
-             "dx": 8,
-             "dy": 380,
-             "dw": 220,
-             "dh": 92,
-        };
-        this.freePlay = {
-             "sx": 756,
-             "sy": 540,
-             "sw": 220,
-             "sh": 92,
-             "dx": 232,
+             "dx": (width - 220) / 2,
              "dy": 380,
              "dw": 220,
              "dh": 92,
@@ -42,8 +32,7 @@ class CSStarting {
     draw(game) {
         // Drawing still frames
         game.boardMessages.gameTitle = new CSBoardMessage(game.width, "gameTitle");
-        game.drawSpriteFromFrames(this.play);
-        game.drawSpriteFromFrames(this.freePlay);
+        game.drawSpriteFromFrames(this.button);
         game.modelEmotes.emote = "happy";
         game.modelEmotes.display = true;
 
