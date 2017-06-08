@@ -77,7 +77,7 @@ class ClefairySays {
 
     reset() {
         let {width, height} = this;
-
+ 
         this.background = new CSBackground(width, height);
         this.starting = new CSStarting();
         this.boardMessages = [];
