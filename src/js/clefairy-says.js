@@ -55,6 +55,11 @@ class ClefairySays {
             "down": new Audio("./resources/clefairy4.mp3")
         };
         this.clefairySounds.volume = 1;
+
+        this.goodSound = new Audio("./resources/good.mp3");
+        this.goodSound.volume = 0.1;
+        this.wrongSound = new Audio("./resources/wrong.mp3");
+        this.wrongSound.volume = 0.1;
     }
 
     setup() {
@@ -94,6 +99,7 @@ class ClefairySays {
         this.aPlayerMoves = [];
         this.deadMusic.pause();
         this.deadMusic.currentTime = 0;
+        this.soundPlayed = false;
     }
 
     animate() {
@@ -115,7 +121,7 @@ class ClefairySays {
 
         // repeat music
         this.repeatMusic(this.percussionMusic, 2, 5);
-        
+
         // check state of the game
         if(this.started) {
             this.ditto.draw(this);
@@ -337,7 +343,12 @@ class ClefairySays {
             if((this.aPlayerMoves[this.currentStep].direction === this.aIaMoves[this.currentStep].direction)) {
                 this.modelEmotes.emote = "happy";
                 this.dittoEmotes.emote = "music";
+                if(!this.soundPlayed) {
+                    this.goodSound.play();
+                    this.soundPlayed = true;
+                }
                 if((this.time.current - this.time.validationStart > 1000) && this.currentStep < this.aIaMoves.length) {
+                    this.soundPlayed = false;
                     this.currentStep++;
                     this.time.validationStart = Date.now();
                     this.score.increment();
@@ -345,11 +356,17 @@ class ClefairySays {
             } else {
                 this.modelEmotes.emote = "upset";
                 this.dittoEmotes.emote = "careful";
+
                 if(this.errorsCount < 5) {
                     console.log(this.errorsCount);
                     this.lifes[this.errorsCount].status = "dead";
                 }
+                if(!this.soundPlayed) {
+                    this.wrongSound.play();
+                    this.soundPlayed = true;
+                }
                 if((this.time.current - this.time.validationStart > 1000) && this.currentStep < this.aIaMoves.length) {
+                    this.soundPlayed = false;
                     this.errorsCount++;
                     this.currentStep++;
                     this.time.validationStart = Date.now();
