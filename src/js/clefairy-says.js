@@ -63,6 +63,7 @@ class ClefairySays {
         this.clefairy = new CSClefairy(width, "clefairy", "normal");
         this.ditto = new CSClefairy(width, "ditto", "normal");
         this.lifes = [new CSLife("alive", 0), new CSLife("alive", 1), new CSLife("alive", 2), new CSLife("alive", 3), new CSLife("alive", 4)];
+        this.score = new CSScore(0);
 
         //this.gameOver = new CSGameOver(width, height);
 
