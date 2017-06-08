@@ -64,8 +64,7 @@ class ClefairySays {
         this.ditto = new CSClefairy(width, "ditto", "normal");
         this.lifes = [new CSLife("alive", 0), new CSLife("alive", 1), new CSLife("alive", 2), new CSLife("alive", 3), new CSLife("alive", 4)];
         this.score = new CSScore(0);
-
-        //this.gameOver = new CSGameOver(width, height);
+        this.gameOver = new CSGameOver(width);
 
         // init game-related properties
         this.started = false;
@@ -74,28 +73,31 @@ class ClefairySays {
         this.playerTurn = false;
         this.playerActionStart = false;
         this.playerMovesValidation = false;
+        this.validationEnded = false;
+        this.gameOverAnimation = false;
         this.errorsCount = 0;
         this.aIaMoves = [];
         this.aPlayerMoves = [];
+
+
     }
 
     animate() {
         this.animationRequestId = window.requestAnimationFrame(this.animate.bind(this));
-
         // draw
         this.context.clearRect(0, 0, this.width, this.height);
         this.background.draw(this);
         this.clefairy.draw(this);
-        this.score.draw(this);
 
         if(this.modelEmotes.display) {
             this.modelEmotes.draw(this);
         }
+        if(this.dittoEmotes.display) {
+            this.dittoEmotes.draw(this);
+        }
         for(let message in this.boardMessages) {
             this.boardMessages[message].draw(this);
-            //console.log(this.boardMessages);
         }
-
 
         // check state of the game
         if(this.started) {
@@ -103,7 +105,16 @@ class ClefairySays {
             this.checkState();
         } else if(this.ended) {
             this.over();
+            this.gameOver.draw(this);
+            /* Tried to animate game over, but lacking time
+            if(!this.gameOverAnimation) {
+                this.time.gameOver = Date.now();
+                this.gameOverAnimation = true;
+                this.currentStep = 0;
+            }
+            */
         } else {
+            this.dittoEmotes.display = false;
             this.starting.draw(this);
         }
     }
@@ -138,7 +149,7 @@ class ClefairySays {
             if(oEvent.keyCode === 13 || oEvent.keyCode === 32 || oEvent.type === "click") {
                 this.reset();
                 this.animate();
-                this.launchGame();
+                this.starting.draw(this);
             }
         }
     }
@@ -149,9 +160,6 @@ class ClefairySays {
         }
         if(this.playerTurn) {
             this.processPlayerTurn();
-        }
-        if(this.dittoEmotes.display) {
-            this.dittoEmotes.draw(this);
         }
         if(this.lifes.display) {
             for(let i = 0; i < this.lifes.length; i++) {
@@ -171,7 +179,11 @@ class ClefairySays {
         // Create arrow with random index in aPossibleMoves and push it to aIaMoves
         this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
         this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
-        //console.log(this.aIaMoves);
+        this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
+        this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
+        this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
+        this.aIaMoves.push(new CSArrow(this.aPossibleMoves[Math.floor(Math.random() * 4)].direction, this.aIaMoves.length));
+
     }
 
     addPlayerMove(keyCode) {
@@ -179,7 +191,6 @@ class ClefairySays {
             if(this.aPossibleMoves[i].key === keyCode) {
                 this.aPlayerMoves.push(new CSArrow(this.aPossibleMoves[i].direction, this.aPlayerMoves.length));
                 this.ditto.direction = this.aPlayerMoves[this.aPlayerMoves.length - 1].direction;
-                //console.log(this.aPossibleMoves[i].direction);
             }
         }
     }
@@ -259,6 +270,8 @@ class ClefairySays {
                     this.lifes.display = true;
                     this.playerMovesValidation = true;
                     this.validateMoves();
+                } else {
+                    this.validationEnded = false;
                 }
             }
         }
@@ -284,7 +297,7 @@ class ClefairySays {
         // making both clefairy follow their array moves (aIaMoves and aPlayerMoves)
         if(this.currentStep < this.aIaMoves.length) {
             this.clefairy.direction = this.aIaMoves[this.currentStep].direction;
-            this.ditto.direction = this.aIaMoves[this.currentStep].direction;
+            this.ditto.direction = this.aPlayerMoves[this.currentStep].direction;
             this.modelEmotes.display = true;
             this.dittoEmotes.display = true;
         }
@@ -297,7 +310,16 @@ class ClefairySays {
 
         // changing emotes according to success or fail, + errorsCount incrementation
         if(!this.validationEnded) {
-            if((this.aIaMoves[this.currentStep].direction !== this.aPlayerMoves[this.currentStep].direction)) {
+            if((this.aPlayerMoves[this.currentStep].direction === this.aIaMoves[this.currentStep].direction)) {
+                this.modelEmotes.emote = "happy";
+                this.dittoEmotes.emote = "music";
+                if((this.time.current - this.time.validationStart > 1000) && this.currentStep < this.aIaMoves.length) {
+                    this.currentStep++;
+                    this.time.validationStart = Date.now();
+                    this.score.increment();
+                    //console.log(this.score.numbers[3].numbers.sy);
+                }
+            } else {
                 this.modelEmotes.emote = "upset";
                 this.dittoEmotes.emote = "careful";
                 if((this.time.current - this.time.validationStart > 1000) && this.currentStep < this.aIaMoves.length) {
@@ -308,49 +330,46 @@ class ClefairySays {
                     }
                     this.currentStep++;
                     this.time.validationStart = Date.now();
-
-                }
-            } else {
-                this.modelEmotes.emote = "happy";
-                this.dittoEmotes.emote = "music";
-                console.log("good");
-                if((this.time.current - this.time.validationStart > 1000) && this.currentStep < this.aIaMoves.length) {
-                    console.log("step++");
-                    this.currentStep++;
-                    this.time.validationStart = Date.now();
-                    //this.score.increment();
-                    //console.log(this.score.numbers[3].numbers.sy);
                 }
             }
+
+            // ending validation phase when all moves have been compared
+            if(this.currentStep >= this.aIaMoves.length) {
+                this.validationEnded = true;
+            }
+        } else {
+            this.validationEnd();
         }
-        // ending validation phase when all moves have been compared
-        if(this.currentStep >= this.aIaMoves.length) {
-            this.validationEnded = true;
-            this.time.current = Date.now();
 
-            this.modelEmotes.display = false;
-            this.dittoEmotes.display = false;
+    }
 
-            if(this.time.current - this.time.validationStart > 2000) {
-                if(this.errorsCount >= 5) {
-                    this.errorsCount = 5;
-                    this.started = false;
-                    this.ended = true;
-                } else {
-                    this.playerTurn = false;
-                    this.playerAction = false;
-                    this.playerMovesValidation = false;
-                    this.initIaTurn();
-                }
+    validationEnd() {
+        this.time.current = Date.now();
+
+        this.modelEmotes.display = false;
+        this.dittoEmotes.display = false;
+
+        if(this.time.current - this.time.validationStart > 1500) {
+            if(this.errorsCount >= 5) {
+                this.errorsCount = 5;
+                this.started = false;
+                this.ended = true;
+            } else {
+                this.playerTurn = false;
+                this.playerAction = false;
+                this.playerMovesValidation = false;
+                this.initIaTurn();
             }
         }
     }
 
-
     over() {
         this.boardMessages.gameOver = new CSBoardMessage(this.width, "gameOver");
         this.boardMessages.score = new CSBoardMessage(this.width, "score");
-        console.log("Game over screen");
+        this.score.draw(this);
+        this.ditto.draw(this);
+        this.dittoEmotes.display = true;
+        this.dittoEmotes.emote = "sad";
     }
 
     drawSpriteFromFrames({sx, sy, sw, sh, dx, dy, dw, dh}) {
