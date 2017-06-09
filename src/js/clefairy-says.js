@@ -60,6 +60,9 @@ class ClefairySays {
         this.goodSound.volume = 0.1;
         this.wrongSound = new Audio("./resources/wrong.mp3");
         this.wrongSound.volume = 0.1;
+        this.wowSound = new Audio("./resources/wow.mp3");
+        this.wowSound.volume = 1;
+
 
         this.click = {};
 
@@ -77,7 +80,7 @@ class ClefairySays {
 
     reset() {
         let {width, height} = this;
- 
+
         this.background = new CSBackground(width, height);
         this.starting = new CSStarting();
         this.boardMessages = [];
@@ -156,6 +159,7 @@ class ClefairySays {
                 delete this.boardMessages.yourTurn;
                 this.boardMessages.youWon = new CSBoardMessage(this.width, "youWon");
                 this.modelEmotes.emote = "happy";
+                this.wowSound.play();
             }
 
         } else {
