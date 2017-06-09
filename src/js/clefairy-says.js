@@ -302,12 +302,19 @@ class ClefairySays {
     }
 
     initIaTurn() {
-        this.iaTurn = true;
-        this.lifes.display = false;
-        this.time.turnStart = Date.now();
-        this.currentStep = 0;
-        this.giveMove();
-        this.musicValidation = false;
+        if(this.aIaMoves.length < 50) {
+            this.iaTurn = true;
+            this.lifes.display = false;
+            this.musicValidation = false;
+            this.time.turnStart = Date.now();
+            this.currentStep = 0;
+            this.giveMove();
+        } else {
+            this.ended = true;
+            this.started = false;
+            this.dittoEmotes.emote = "happy";
+        }
+
     }
 
     processIaTurn() {
@@ -473,6 +480,7 @@ class ClefairySays {
                 this.errorsCount = 5;
                 this.started = false;
                 this.ended = true;
+                this.dittoEmotes.emote = "sad";
             } else {
                 this.playerTurn = false;
                 this.playerAction = false;
@@ -488,7 +496,6 @@ class ClefairySays {
         this.score.draw(this);
         this.ditto.draw(this);
         this.dittoEmotes.display = true;
-        this.dittoEmotes.emote = "sad";
     }
 
     drawSpriteFromFrames({sx, sy, sw, sh, dx, dy, dw, dh}) {
